@@ -6,15 +6,23 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tpachat
     volumes:
       - /home/mysql/data:/var/lib/mysql
-
+    networks:
+      - kaddem_network
 
   spring_app:
     image: mehdikallel1/devopsimage
     container_name: devopscontainer
     restart: on-failure
     ports:
-      - 9096:9096
+      - 8089:8089
     depends_on:
       - mysqldb
+    networks:
+      - kaddem_network
+
+networks:
+  kaddem_network:
+    driver: bridge
