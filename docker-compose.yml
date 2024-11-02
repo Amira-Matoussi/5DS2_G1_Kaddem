@@ -1,28 +1,19 @@
-version: "3.3"
-services:
-  mysqldb:
-    container_name: mysqldb
-    image: mysql:8
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: tpachat
-    volumes:
-      - /home/mysql/data:/var/lib/mysql
-    networks:
-      - kaddem_network
+version: "3.3" 
+services: 
+  mysqldb: 
+    container_name: mysqldb 
+    image: mysql:8 
+    restart: unless-stopped 
+    environment: 
+      MYSQL_ROOT_PASSWORD: root 
+    volumes: 
+      - /home/mysql/data:/var/lib/mysql 
 
-  spring_app:
-    image: mehdikallel1/devopsimage
-    container_name: devopscontainer
-    restart: on-failure
-    ports:
-      - 8089:8089
-    depends_on:
+  spring_app: 
+    image: mehdikallel1/devopsimage 
+    container_name: devopscontainer 
+    restart: on-failure 
+    ports: 
+      - 9096:9096 
+    depends_on: 
       - mysqldb
-    networks:
-      - kaddem_network
-
-networks:
-  kaddem_network:
-    driver: bridge
