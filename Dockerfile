@@ -3,7 +3,7 @@
 #ADD target/kaddem-0.0.1-SNAPSHOT.jar app.jar
 #ENTRYPOINT ["java", "-jar", "/app.jar"]
 # Use the official OpenJDK 8 image as the base image
-FROM openjdk:8-jdk-alpine
+FROM openjdk:17
 
 # Expose the port your application will run on
 EXPOSE 9096
