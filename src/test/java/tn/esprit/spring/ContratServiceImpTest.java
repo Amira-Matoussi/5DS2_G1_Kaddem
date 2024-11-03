@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ContratServiceImpTest {
+class ContratServiceImpTest {
 
     @Mock
     private ContratRepository contratRepository;
@@ -52,7 +52,7 @@ public class ContratServiceImpTest {
     }
 
     @Test
-    public void testAddContrat() {
+    void testAddContrat() {
         // Arrange
         when(contratRepository.save(any(Contrat.class))).thenReturn(testContrat);
 
@@ -74,7 +74,7 @@ public class ContratServiceImpTest {
 
 
     @Test
-    public void testRetrieveAllContrats() {
+    void testRetrieveAllContrats() {
         // Arrange
         List<Contrat> mockContrats = Arrays.asList(testContrat);
         when(contratRepository.findAll()).thenReturn(mockContrats);
@@ -92,7 +92,7 @@ public class ContratServiceImpTest {
     }
 
     @Test
-    public void testGetContratById() {
+    void testGetContratById() {
         // Arrange
         Integer contratId = 1;
         when(contratRepository.findById(contratId)).thenReturn(Optional.of(testContrat));
@@ -114,7 +114,7 @@ public class ContratServiceImpTest {
     }
 
     @Test
-    public void testGetContratByIdNotFound() {
+    void testGetContratByIdNotFound() {
         // Arrange
         Integer contratId = 999;
         when(contratRepository.findById(contratId)).thenReturn(Optional.empty());
