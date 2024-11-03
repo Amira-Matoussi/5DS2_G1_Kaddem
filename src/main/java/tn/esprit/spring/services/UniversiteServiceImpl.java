@@ -13,10 +13,15 @@ import java.util.Set;
 
 @Service
 public class UniversiteServiceImpl implements IUniversiteService{
-@Autowired
-UniversiteRepository universiteRepository;
-@Autowired
-DepartementRepository departementRepository;
+    private final UniversiteRepository universiteRepository;
+    private final DepartementRepository departementRepository;
+
+    // Constructor injection for both repositories
+    @Autowired
+    public UniversiteServiceImpl(UniversiteRepository universiteRepository, DepartementRepository departementRepository) {
+        this.universiteRepository = universiteRepository;
+        this.departementRepository = departementRepository;
+    }
     public UniversiteServiceImpl() {
         // The default constructor is intentionally left empty.
         // It may be used for frameworks or libraries that require a no-argument constructor.

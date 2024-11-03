@@ -17,10 +17,16 @@ import java.util.Set;
 @Slf4j
 @Service
 public class ContratServiceImpl implements IContratService{
-@Autowired
-ContratRepository contratRepository;
-@Autowired
-EtudiantRepository etudiantRepository;
+	private final ContratRepository contratRepository;
+	private final EtudiantRepository etudiantRepository;
+
+	// Constructor injection
+	@Autowired
+	public ContratServiceImpl(ContratRepository contratRepository, EtudiantRepository etudiantRepository) {
+		this.contratRepository = contratRepository;
+		this.etudiantRepository = etudiantRepository;
+	}
+
 	public List<Contrat> retrieveAllContrats(){
 		return contratRepository.findAll();
 	}

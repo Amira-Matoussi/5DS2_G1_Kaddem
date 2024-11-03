@@ -1,6 +1,6 @@
 package tn.esprit.spring.controllers;
 
-import lombok.AllArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Departement;
@@ -11,11 +11,15 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/universite")
 public class UniversiteRestController {
+	private final IUniversiteService universiteService;
+
+	// Constructor injection
 	@Autowired
-	IUniversiteService universiteService;
+	public UniversiteRestController(IUniversiteService universiteService) {
+		this.universiteService = universiteService;
+	}
 	// http://localhost:8089/Kaddem/universite/retrieve-all-universites
 	@GetMapping("/retrieve-all-universites")
 	public List<Universite> getUniversites() {

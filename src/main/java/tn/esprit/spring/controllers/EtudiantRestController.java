@@ -1,6 +1,5 @@
 package tn.esprit.spring.controllers;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Etudiant;
@@ -9,11 +8,15 @@ import tn.esprit.spring.services.IEtudiantService;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/etudiant")
 public class EtudiantRestController {
+	private final IEtudiantService etudiantService;
+
+	// Constructor injection
 	@Autowired
-	IEtudiantService etudiantService;
+	public EtudiantRestController(IEtudiantService etudiantService) {
+		this.etudiantService = etudiantService;
+	}
 	// http://localhost:8089/Kaddem/etudiant/retrieve-all-etudiants
 	@GetMapping("/retrieve-all-etudiants")
 	public List<Etudiant> getEtudiants() {
