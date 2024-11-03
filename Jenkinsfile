@@ -63,8 +63,8 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 echo 'Pushing Docker Image to Docker Hub...';
-                sh 'docker login -u khaledchaabouni -p dckr_pat_7kWM12VTv9eWmsh0_bGuqOnIzis';
-                sh 'docker push khaledchaabouni/5ds2_g1_kaddem:1.0.0';
+                sh 'docker login -u khaledchaabouni1998 -p Chaabouni111KH928';
+                sh 'docker push khaledchaabouni1998/kaddem:1.0.0';
             }
         }
 
