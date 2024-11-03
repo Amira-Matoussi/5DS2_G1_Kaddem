@@ -28,17 +28,23 @@ pipeline {
         }
 
         // 4. Code Quality Check with SonarQube
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Running SonarQube analysis...'
-                // Use the SonarQube environment variables set in Jenkins
-                sh """
-                    mvn sonar:sonar \
-                    -Dsonar.projectKey=5ds2_g1_kaddem \
-                    -Dsonar.host.url=\$SONAR_HOST_URL \
-                    -Dsonar.login=\$SONAR_AUTH_TOKEN \
-                    -X
-                """
+        environment {
+            SONAR_HOST_URL = 'http://192.168.1.11:9000' // Replace with your SonarQube URL
+            SONAR_AUTH_TOKEN = credentials('sonartoken') // Assuming 'sonartoken' is set in Jenkins credentials
+        }
+    
+        stages {
+            stage('SonarQube Analysis') {
+                steps {
+                    echo 'Running SonarQube analysis...'
+                    sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=5ds2_g1_kaddem \
+                        -Dsonar.host.url=$SONAR_HOST_URL \
+                        -Dsonar.login=$SONAR_AUTH_TOKEN \
+                        -X
+                    '''
+                }
             }
         }
 
