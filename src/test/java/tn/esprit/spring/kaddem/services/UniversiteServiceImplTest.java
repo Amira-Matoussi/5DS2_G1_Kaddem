@@ -1,117 +1,118 @@
 package tn.esprit.spring.kaddem.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import tn.esprit.spring.kaddem.entities.Universite;
+import tn.esprit.spring.kaddem.repositories.UniversiteRepository;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 @Slf4j
 class UniversiteServiceImplTest {
 
-    @Autowired
-    IUniversiteService universiteService;
+    @Mock
+    UniversiteRepository universiteRepository;
 
-    @Test
-    public void testAddUniversite() {
-        // Create a new Universite object with sample data
-        Universite u = new Universite();
-        u.setNomUniv("Sample University");
+    @InjectMocks
+    UniversiteServiceImpl universiteService;
 
-        // Add the Universite using the service
-        Universite universite = universiteService.addUniversite(u);
-
-        // Log the created Universite
-        log.info("Created universite: {}", universite);
-
-        // Assertions to verify the Universite was created correctly
-        assertNotNull(universite.getIdUniv());
-        assertNotNull(universite.getNomUniv());
-        assertTrue(universite.getNomUniv().length() > 0);
-
-        // Clean up by deleting the test Universite
-        universiteService.deleteUniversite(universite.getIdUniv());
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testRetrieveAllUniversites() {
-        // Add a new Universite for the purpose of this test
-        Universite universite = new Universite();
-        universite.setNomUniv("Test University for Retrieve");
-        universiteService.addUniversite(universite);
+    void retrieveAllUniversites() {
+        // Mock data
+        List<Universite> mockUniversites = new ArrayList<>();
+        mockUniversites.add(new Universite("University 1"));
+        mockUniversites.add(new Universite("University 2"));
 
-        // Retrieve all Universites
+        // Define behavior of mock repository
+        when(universiteRepository.findAll()).thenReturn(mockUniversites);
+
+        // Call service method
         List<Universite> universites = universiteService.retrieveAllUniversites();
 
-        // Log the count of retrieved Universites
-        log.info("Number of universites retrieved: {}", universites.size());
+        // Log result
+        log.info("Retrieved {} universites: {}", universites.size(), universites);
 
-        // Assertions to ensure the list contains at least the one we added
+        // Assertions
         assertNotNull(universites);
-        assertTrue(universites.size() > 0);
-
-        // Clean up by deleting the test Universite
-        universiteService.deleteUniversite(universite.getIdUniv());
+        assertEquals(2, universites.size());
+        verify(universiteRepository, times(1)).findAll();
     }
 
     @Test
-    public void testUpdateUniversite() {
-        // Create a new Universite and add it
-        Universite u = new Universite();
-        u.setNomUniv("Old University Name");
-        Universite savedUniversite = universiteService.addUniversite(u);
+    void addUniversite() {
+        // Mock data
+        Universite u = new Universite("Mock University");
 
-        // Update the Universite's name
-        savedUniversite.setNomUniv("Updated University Name");
-        Universite updatedUniversite = universiteService.updateUniversite(savedUniversite);
+        // Define behavior of mock repository
+        when(universiteRepository.save(any(Universite.class))).thenReturn(u);
 
-        // Log the updated Universite
+        // Call service method
+        Universite addedUniversite = universiteService.addUniversite(u);
+
+        // Log result
+        log.info("Added universite: {}", addedUniversite);
+
+        // Assertions
+        assertNotNull(addedUniversite);
+        assertEquals("Mock University", addedUniversite.getNomUniv());
+        verify(universiteRepository, times(1)).save(any(Universite.class));
+    }
+
+    @Test
+    void updateUniversite() {
+        // Mock data
+        Universite u = new Universite("Old Name");
+        u.setIdUniv(1);
+        Universite updated = new Universite("Updated Name");
+        updated.setIdUniv(1);
+
+        // Define behavior of mock repository
+        when(universiteRepository.findById(anyInt())).thenReturn(Optional.of(u));
+        when(universiteRepository.save(any(Universite.class))).thenReturn(updated);
+
+        // Update Universite name
+        u.setNomUniv("Updated Name");
+        Universite updatedUniversite = universiteService.updateUniversite(u);
+
+        // Log result
         log.info("Updated universite: {}", updatedUniversite);
 
-        // Assertions to verify the update was successful
-        assertEquals("Updated University Name", updatedUniversite.getNomUniv());
-
-        // Clean up
-        universiteService.deleteUniversite(updatedUniversite.getIdUniv());
+        // Assertions
+        assertNotNull(updatedUniversite);
+        assertEquals("Updated Name", updatedUniversite.getNomUniv());
+        verify(universiteRepository, times(1)).save(any(Universite.class));
     }
 
     @Test
-    public void testDeleteUniversite() {
-        // Create and save a new Universite
+    void deleteUniversite() {
+        // Mock data
         Universite u = new Universite();
-        u.setNomUniv("University to Delete");
-        Universite savedUniversite = universiteService.addUniversite(u);
+        u.setIdUniv(1);
 
-        // Delete the Universite
-        universiteService.deleteUniversite(savedUniversite.getIdUniv());
+        // Define behavior of mock repository
+        when(universiteRepository.findById(anyInt())).thenReturn(Optional.of(u));
 
-        // Try to retrieve the deleted Universite and expect an exception
-        try {
-            universiteService.retrieveUniversite(savedUniversite.getIdUniv());
-            fail("Expected NoSuchElementException to be thrown");
-        } catch (NoSuchElementException e) {
-            // Log the successful catch of the exception
-            log.info("Successfully caught NoSuchElementException after deletion, as expected.");
-        }
+        // Call delete method
+        universiteService.deleteUniversite(1);
+
+        // Log result
+        log.info("Deleted universite with ID: {}", u.getIdUniv());
+
+        // Verify deletion
+        verify(universiteRepository, times(1)).delete(any(Universite.class));
     }
-
-    @Test
-    public void testAssignUniversiteToDepartement() {
-
-    }
-
-    @Test
-    public void testRetrieveDepartementsByUniversite() {
-
-    }
-
 }
