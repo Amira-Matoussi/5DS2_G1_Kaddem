@@ -1,65 +1,131 @@
 package tn.esprit.spring;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import tn.esprit.spring.entities.Contrat;
 import tn.esprit.spring.entities.Specialite;
-import tn.esprit.spring.services.IContratService;
-
+import tn.esprit.spring.repositories.ContratRepository;
+import tn.esprit.spring.services.ContratServiceImpl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@Slf4j
+@ExtendWith(MockitoExtension.class)
 public class ContratServiceImpTest {
-    @Autowired
-    IContratService contratService;
+
+    @Mock
+    private ContratRepository contratRepository;
+
+    @InjectMocks
+    private ContratServiceImpl contratService;
+
+    private Contrat testContrat;
+    private Date dateDebut;
+    private Date dateFin;
+
+    @BeforeEach
+    void setUp() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateDebut = dateFormat.parse("01/09/2023");
+        dateFin = dateFormat.parse("01/09/2024");
+
+        testContrat = new Contrat(
+                dateDebut,
+                dateFin,
+                Specialite.IA,
+                false,
+                5000
+        );
+        testContrat.setIdContrat(1);
+    }
+
+    @Test
+    public void testAddContrat() {
+        // Arrange
+        when(contratRepository.save(any(Contrat.class))).thenReturn(testContrat);
+
+        // Act
+        Contrat result = contratService.addContrat(testContrat);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(testContrat.getIdContrat(), result.getIdContrat());
+        assertEquals(testContrat.getSpecialite(), result.getSpecialite());
+        assertEquals(testContrat.getDateDebutContrat(), result.getDateDebutContrat());
+        assertEquals(testContrat.getDateFinContrat(), result.getDateFinContrat());
+        assertFalse(result.getArchive());
+        assertEquals(5000, result.getMontantContrat());
+
+        // Verify
+        verify(contratRepository, times(1)).save(any(Contrat.class));
+    }
 
 
+    @Test
+    public void testRetrieveAllContrats() {
+        // Arrange
+        List<Contrat> mockContrats = Arrays.asList(testContrat);
+        when(contratRepository.findAll()).thenReturn(mockContrats);
 
+        // Act
+        List<Contrat> result = contratService.retrieveAllContrats();
 
-        @Test
-        public void testAddContrat() throws ParseException {
-            // Create SimpleDateFormat for parsing dates
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(testContrat.getIdContrat(), result.get(0).getIdContrat());
 
-            // Parse start and end dates for the contract
-            Date dateDebut = dateFormat.parse("01/09/2023");
-            Date dateFin = dateFormat.parse("01/09/2024");
+        // Verify
+        verify(contratRepository, times(1)).findAll();
+    }
 
-            // Create new Contrat object
-            Contrat c = new Contrat(
-                    dateDebut,
-                    dateFin,
-                    Specialite.IA,  // Assuming IA is one of your Specialite enum values
-                    false,          // not archived
-                    5000           // montant contrat
-            );
+    @Test
+    public void testGetContratById() {
+        // Arrange
+        Integer contratId = 1;
+        when(contratRepository.findById(contratId)).thenReturn(Optional.of(testContrat));
 
-            // Add the contract using the service
-            Contrat contrat = contratService.addContrat(c);
+        // Act
+        Contrat result = contratService.retrieveContrat(contratId);
 
-            // Print the created contract
-            System.out.print("contrat " + contrat);
+        // Assert
+        assertNotNull(result);
+        assertEquals(contratId, result.getIdContrat());
+        assertEquals(Specialite.IA, result.getSpecialite());
+        assertEquals(dateDebut, result.getDateDebutContrat());
+        assertEquals(dateFin, result.getDateFinContrat());
+        assertFalse(result.getArchive());
+        assertEquals(5000, result.getMontantContrat());
 
-            // Assertions to verify the contract was created correctly
-            assertNotNull(contrat.getIdContrat());
-            assertNotNull(contrat.getSpecialite());
-            assertNotNull(contrat.getDateDebutContrat());
-            assertNotNull(contrat.getDateFinContrat());
-            assertFalse(contrat.getArchive());
-            assertTrue(contrat.getMontantContrat() > 0);
+        // Verify
+        verify(contratRepository, times(1)).findById(contratId);
+    }
 
-            // Clean up by deleting the test contract
-            contratService.removeContrat(contrat.getIdContrat());
-        }
+    @Test
+    public void testGetContratByIdNotFound() {
+        // Arrange
+        Integer contratId = 999;
+        when(contratRepository.findById(contratId)).thenReturn(Optional.empty());
+
+        // Act
+        Contrat result = contratService.retrieveContrat(contratId);
+
+        // Assert
+        assertNull(result);
+
+        // Verify
+        verify(contratRepository, times(1)).findById(contratId);
+    }
 }
