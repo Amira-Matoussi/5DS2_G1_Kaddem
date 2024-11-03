@@ -31,7 +31,9 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...';
-                sh 'mvn sonar:sonar -Dsonar.projectKey=5ds2_g1_kaddem -Dsonar.login=admin -Dsonar.password=Chaabouni111KH928&';
+                withCredentials([string(credentialsId: 'devops_project', variable: 'dckr_pat_7kWM12VTv9eWmsh0_bGuqOnIzis')]) {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=5ds2_g1_kaddem -Dsonar.host.url=http://192.168.1.11:9000 -Dsonar.login=$SONAR_TOKEN'
+                }
             }
         }
 
