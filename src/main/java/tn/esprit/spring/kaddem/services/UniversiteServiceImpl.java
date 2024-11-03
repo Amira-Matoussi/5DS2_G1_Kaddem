@@ -35,7 +35,7 @@ public class UniversiteServiceImpl implements IUniversiteService {
     }
 
     public Universite addUniversite(Universite u) {
-        log.info("Adding new university: {}", u.getNomUniv());
+        log.info("Adding new university : {}", u.getNomUniv());
         Universite savedUniversite = universiteRepository.save(u);
         log.info("University added with ID: {}", savedUniversite.getIdUniv());
         return savedUniversite;
