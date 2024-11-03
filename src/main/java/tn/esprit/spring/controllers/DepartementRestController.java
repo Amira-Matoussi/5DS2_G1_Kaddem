@@ -3,6 +3,7 @@ package tn.esprit.spring.controllers;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Departement;
+import tn.esprit.spring.entities.DepartementDTO;
 import tn.esprit.spring.services.IDepartementService;
 
 import java.util.List;
@@ -25,8 +26,10 @@ public class DepartementRestController {
 
 	// http://localhost:8089/Kaddem/departement/add-departement
 	@PostMapping("/add-departement")
-	public Departement addDepartement(@RequestBody Departement d) {
-		return departementService.addDepartement(d);
+	public Departement addDepartement(@RequestBody DepartementDTO departementDTO) {
+		Departement departement = new Departement();
+		departement.setNomDepart(departementDTO.getNomDepart());
+		return departementService.addDepartement(departement);
 	}
 
 	// http://localhost:8089/Kaddem/departement/remove-departement/1

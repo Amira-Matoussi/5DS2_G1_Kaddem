@@ -5,6 +5,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Contrat;
+import tn.esprit.spring.entities.ContratDTO;
+import tn.esprit.spring.entities.Specialite;
 import tn.esprit.spring.services.IContratService;
 
 import java.util.Date;
@@ -28,8 +30,20 @@ public class ContratRestController {
 
 	// http://localhost:8089/Kaddem/econtrat/add-contrat
 	@PostMapping("/add-contrat")
-	public Contrat addContrat(@RequestBody Contrat c) {
-		return contratService.addContrat(c);
+	public Contrat addContrat(@RequestBody ContratDTO contratDTO) {
+		Contrat contrat = mapToEntity(contratDTO);
+		return contratService.addContrat(contrat);
+	}
+
+	private Contrat mapToEntity(ContratDTO contratDTO) {
+		Contrat contrat = new Contrat();
+		contrat.setIdContrat(contratDTO.getIdContrat());
+		contrat.setDateDebutContrat(contratDTO.getDateDebutContrat());
+		contrat.setDateFinContrat(contratDTO.getDateFinContrat());
+		contrat.setSpecialite(Specialite.valueOf(contratDTO.getSpecialite()));  // Convert string back to enum
+		contrat.setArchive(contratDTO.getArchive());
+		contrat.setMontantContrat(contratDTO.getMontantContrat());
+		return contrat;
 	}
 
 	// http://localhost:8089/Kaddem/contrat/remove-contrat/1
@@ -40,14 +54,18 @@ public class ContratRestController {
 
 	// http://localhost:8089/Kaddem/contrat/update-contrat
 	@PutMapping("/update-contrat")
-	public Contrat updateContrat(@RequestBody Contrat c) {
-		return contratService.updateContrat(c);
+	public Contrat updateContrat(@RequestBody ContratDTO contratDTO) {
+		Contrat contrat = mapToEntity(contratDTO);
+		return contratService.updateContrat(contrat);
 	}
 	@PutMapping(value = "/assignContratToEtudiant/{idContrat}/{nomE}/{prenomE}")
-	public Contrat assignContratToEtudiant (Integer idContrat, String nomE, String prenomE){
-	//	Contrat c= contratService.affectContratToEtudiant()
-		return 	(contratService.affectContratToEtudiant(idContrat, nomE, prenomE));
+	public Contrat assignContratToEtudiant(
+			@PathVariable("idContrat") Integer idContrat,
+			@PathVariable("nomE") String nomE,
+			@PathVariable("prenomE") String prenomE) {
+		return contratService.affectContratToEtudiant(idContrat, nomE, prenomE);
 	}
+
 
 	//The most common ISO Date Format yyyy-MM-dd — for example, "2000-10-31".
 		@GetMapping(value = "/getnbContratsValides/{startDate}/{endDate}")

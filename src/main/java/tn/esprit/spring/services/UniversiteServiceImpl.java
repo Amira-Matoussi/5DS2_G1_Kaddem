@@ -31,10 +31,10 @@ return  (universiteRepository.save(u));
      return  (universiteRepository.save(u));
     }
 
-  public Universite retrieveUniversite (Integer idUniversite){
-Universite u = universiteRepository.findById(idUniversite).get();
-return  u;
+    public Universite retrieveUniversite(Integer idUniversite) {
+        return universiteRepository.findById(idUniversite).orElse(null);
     }
+
     public  void deleteUniversite(Integer idUniversite){
         universiteRepository.delete(retrieveUniversite(idUniversite));
     }

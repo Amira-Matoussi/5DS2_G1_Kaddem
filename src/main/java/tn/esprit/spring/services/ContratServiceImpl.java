@@ -49,7 +49,7 @@ EtudiantRepository etudiantRepository;
 		Contrat ce=contratRepository.findByIdContrat(idContrat);
 		Set<Contrat> contrats= e.getContrats();
 		Integer nbContratssActifs=0;
-		if (contrats.size()!=0) {
+		if (!contrats.isEmpty()) {
 			for (Contrat contrat : contrats) {
 				if (((contrat.getArchive())!=null)) {
 					nbContratssActifs++;
