@@ -31,7 +31,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...';
-                sh 'mvn sonar:sonar -Dsonar.projectKey=Kaddem -Dsonar.login=admin -Dsonar.password=Chaabouni111KH928&';
+                sh 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=Chaabouni111KH928&';
             }
         }
 
