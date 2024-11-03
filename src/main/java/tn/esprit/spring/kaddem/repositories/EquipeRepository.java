@@ -10,3 +10,4 @@ public interface EquipeRepository extends CrudRepository<Equipe,Integer> {
 
 
 }
+
