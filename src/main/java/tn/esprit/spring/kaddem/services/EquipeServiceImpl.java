@@ -1,82 +1,140 @@
 package tn.esprit.spring.kaddem.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import tn.esprit.spring.kaddem.entities.Contrat;
 import tn.esprit.spring.kaddem.entities.Equipe;
 import tn.esprit.spring.kaddem.entities.Etudiant;
 import tn.esprit.spring.kaddem.entities.Niveau;
 import tn.esprit.spring.kaddem.repositories.EquipeRepository;
 
-import java.util.Date;
+import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Service Implementation for managing Equipe operations
+ */
 @Slf4j
 @AllArgsConstructor
 @Service
-public class EquipeServiceImpl implements IEquipeService{
-	EquipeRepository equipeRepository;
+public class EquipeServiceImpl implements IEquipeService {
+
+    private final EquipeRepository equipeRepository;
+
+    @Override
+    public List<Equipe> retrieveAllEquipes() {
+        return (List<Equipe>) equipeRepository.findAll();
+    }
+
+    @Override
+    public Equipe addEquipe(Equipe equipe) {
+        log.info("Adding new team: {}", equipe.getNomEquipe());
+        return equipeRepository.save(equipe);
+    }
+
+    @Override
+    public void deleteEquipe(Integer idEquipe) {
+        Equipe equipe = retrieveEquipe(idEquipe);
+        log.info("Deleting team with ID: {}", idEquipe);
+        equipeRepository.delete(equipe);
+    }
+
+    @Override
+    public Equipe retrieveEquipe(Integer equipeId) {
+        return equipeRepository.findById(equipeId)
+                .orElseThrow(() -> new EntityNotFoundException("Team not found with id: " + equipeId));
+    }
+
+    @Override
+    public Equipe updateEquipe(Equipe equipe) {
+        log.info("Updating team with ID: {}", equipe.getIdEquipe());
+        return equipeRepository.save(equipe);
+    }
+
+    @Override
+    public void evoluerEquipes() {
+        log.info("Starting team evolution process");
+        List<Equipe> eligibleTeams = retrieveAllEquipes();
+
+        eligibleTeams.stream()
+                .filter(this::isTeamEligibleForEvolution)
+                .forEach(this::evolveTeamIfQualified);
+
+        log.info("Team evolution process completed");
+    }
+
+    /**
+     * Checks if a team is eligible for evolution (JUNIOR or SENIOR level)
+     */
+    private boolean isTeamEligibleForEvolution(Equipe equipe) {
+        return equipe.getNiveau() == Niveau.JUNIOR ||
+                equipe.getNiveau() == Niveau.SENIOR;
+    }
+
+    /**
+     * Evolves team level if qualified based on active contracts
+     */
+    private void evolveTeamIfQualified(Equipe equipe) {
+        if (countStudentsWithActiveContracts(equipe) >= 3) {
+            evolveTeamLevel(equipe);
+        }
+    }
+
+    /**
+     * Counts students with active contracts in the team
+     * */
+
+    private int countStudentsWithActiveContracts(Equipe equipe) {
+        return (int) equipe.getEtudiants().stream()
+                .filter(this::hasActiveYearLongContract)
+                .count();
+    }
+
+    /**
+     * Checks if a student has an active contract longer than a year
+     */
+
+    private boolean hasActiveYearLongContract(Etudiant etudiant) {
+        return etudiant.getContrats().stream()
+                .anyMatch(this::isContractActiveAndOlderThanYear);
+    }
 
 
-	public List<Equipe> retrieveAllEquipes(){
-	return  (List<Equipe>) equipeRepository.findAll();
-	}
-	public Equipe addEquipe(Equipe e){
-		return (equipeRepository.save(e));
-	}
+    /**
+     * Checks if a contract is active and older than a year
+     * */
 
-	public  void deleteEquipe(Integer idEquipe){
-		Equipe e=retrieveEquipe(idEquipe);
-		equipeRepository.delete(e);
-	}
+    private boolean isContractActiveAndOlderThanYear(Contrat contrat) {
+        return !contrat.getArchive() && ChronoUnit.YEARS.between(
+                contrat.getDateFinContrat().toInstant(),
+                LocalDate.now().atStartOfDay()
+        ) > 1;
+    }
 
-	public Equipe retrieveEquipe(Integer equipeId){
-		return equipeRepository.findById(equipeId).get();
-	}
 
-	public Equipe updateEquipe(Equipe e){
-	return (	equipeRepository.save(e));
-	}
+    /**
+     * Evolves the team's level based on current level
+     */
+    private void evolveTeamLevel(Equipe equipe) {
+        Niveau currentLevel = equipe.getNiveau();
+        if (currentLevel == Niveau.JUNIOR) {
+            updateTeamLevel(equipe, Niveau.SENIOR);
+        } else if (currentLevel == Niveau.SENIOR) {
+            updateTeamLevel(equipe, Niveau.EXPERT);
+        }
+    }
 
-	public void evoluerEquipes(){
-		List<Equipe> equipes = (List<Equipe>) equipeRepository.findAll();
-		for (Equipe equipe : equipes) {
-			if ((equipe.getNiveau().equals(Niveau.JUNIOR)) || (equipe.getNiveau().equals(Niveau.SENIOR))) {
-				List<Etudiant> etudiants = (List<Etudiant>) equipe.getEtudiants();
-				Integer nbEtudiantsAvecContratsActifs=0;
-				for (Etudiant etudiant : etudiants) {
-					Set<Contrat> contrats = etudiant.getContrats();
-					//Set<Contrat> contratsActifs=null;
-					for (Contrat contrat : contrats) {
-						Date dateSysteme = new Date();
-						long difference_In_Time = dateSysteme.getTime() - contrat.getDateFinContrat().getTime();
-						long difference_In_Years = (difference_In_Time / (1000l * 60 * 60 * 24 * 365));
-						if ((contrat.getArchive() == false) && (difference_In_Years > 1)) {
-							//	contratsActifs.add(contrat);
-							nbEtudiantsAvecContratsActifs++;
-							break;
-						}
-						if (nbEtudiantsAvecContratsActifs >= 3) break;
-					}
-				}
-					if (nbEtudiantsAvecContratsActifs >= 3){
-						if (equipe.getNiveau().equals(Niveau.JUNIOR)){
-							equipe.setNiveau(Niveau.SENIOR);
-							equipeRepository.save(equipe);
-							break;
-						}
-						if (equipe.getNiveau().equals(Niveau.SENIOR)){
-							equipe.setNiveau(Niveau.EXPERT);
-							equipeRepository.save(equipe);
-							break;
-						}
-				}
-			}
-
-		}
-
-	}
+    /**
+     * Updates team's level and saves to repository
+     */
+    private void updateTeamLevel(Equipe equipe, Niveau newLevel) {
+        log.info("Evolving team {} from {} to {}",
+                equipe.getNomEquipe(), equipe.getNiveau(), newLevel);
+        equipe.setNiveau(newLevel);
+        equipeRepository.save(equipe);
+    }
 }
