@@ -55,7 +55,7 @@ pipeline {
         stage('Docker Image Creation') {
             steps {
                 echo 'Building Docker Image...';
-                sh 'docker build -t khaledchaabouni/5ds2_g1_kaddem:1.0.0 .';
+                sh 'docker build -t khaledchaabouni1998/kaddem:1.0.0 .';
             }
         }
 
