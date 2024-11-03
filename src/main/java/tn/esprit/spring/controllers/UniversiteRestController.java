@@ -40,10 +40,7 @@ public class UniversiteRestController {
 	}
 
 	// http://localhost:8089/Kaddem/universite/update-universite
-	@PutMapping("/update-universite")
-	public Universite updateUniversite(@RequestBody Universite u) {
-		return universiteService.updateUniversite(u);
-	}
+
 
 	//@PutMapping("/affecter-etudiant-departement")
 	@PutMapping(value="/affecter-universite-departement/{universiteId}/{departementId}")

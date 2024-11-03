@@ -71,7 +71,7 @@ EtudiantRepository etudiantRepository;
 		List<Contrat>contratsAarchiver=null;
 		for (Contrat contrat : contrats) {
 			Date dateSysteme = new Date();
-			if (!contrat.getArchive()) {
+			if (Boolean.FALSE.equals(contrat.getArchive())) {
 				long differenceInTime = dateSysteme.getTime() - contrat.getDateFinContrat().getTime();
 				long differenceInDays = (differenceInTime / (1000 * 60 * 60 * 24)) % 365;
 				if (differenceInDays==15){
