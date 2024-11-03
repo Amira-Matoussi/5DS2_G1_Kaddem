@@ -17,7 +17,7 @@ UniversiteRepository universiteRepository;
 @Autowired
 DepartementRepository departementRepository;
     public UniversiteServiceImpl() {
-        // TODO Auto-generated constructor stub
+
     }
   public   List<Universite> retrieveAllUniversites(){
 return (List<Universite>) universiteRepository.findAll();
