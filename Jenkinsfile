@@ -30,8 +30,10 @@ pipeline {
         // 4. Code Quality Check with SonarQube
         stage('SonarQube Analysis') {
             steps {
-                echo 'Running SonarQube analysis...';
-                sh 'mvn sonar:sonar -Dsonar.projectKey=5DS2_G1_Kaddem -Dsonar.login=admin -Dsonar.password=Chaabouni111KH928&';
+                echo 'Running SonarQube analysis...'
+                withSonarQubeEnv('SonarQubeServerName') {
+                    sh 'mvn sonar:sonar -X -Dsonar.projectKey=5DS2_G1_Kaddem'
+                }
             }
         }
 
