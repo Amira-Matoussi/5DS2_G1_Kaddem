@@ -10,7 +10,7 @@ EXPOSE 9096
 
 # Set environment variables
 ENV NEXUS_USERNAME=admin
-ENV NEXUS_PASSWORD=nexus
+ENV NEXUS_PASSWORD=admin
 ENV NEXUS_REPO_URL=http://172.10.0.140:8081/repository/maven-releases/tn/esprit/spring/kaddem/1.0/kaddem-1.0.jar
 
 # Download the JAR file from Nexus and copy it to the container
