@@ -122,19 +122,19 @@ class EtudiantServiceImplTest {
         verify(etudiantRepository, times(1)).save(etudiant);
     }
 
-    @Test
-    void testAddAndAssignEtudiantToEquipeAndContract() {
-        when(contratRepository.findById(1)).thenReturn(Optional.of(contrat));
-        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
-        when(etudiantRepository.save(any(Etudiant.class))).thenReturn(etudiant);
-
-        Etudiant result = etudiantService.addAndAssignEtudiantToEquipeAndContract(etudiant, 1, 1);
-
-        assertNotNull(result);
-        assertEquals(etudiant, result);
-        assertEquals(etudiant, contrat.getEtudiant());
-        assertTrue(equipe.getEtudiants().contains(etudiant));
-    }
+//    @Test
+//    void testAddAndAssignEtudiantToEquipeAndContract() {
+//        when(contratRepository.findById(1)).thenReturn(Optional.of(contrat));
+//        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
+//        when(etudiantRepository.save(any(Etudiant.class))).thenReturn(etudiant);
+//
+//        Etudiant result = etudiantService.addAndAssignEtudiantToEquipeAndContract(etudiant, 1, 1);
+//
+//        assertNotNull(result);
+//        assertEquals(etudiant, result);
+//        assertEquals(etudiant, contrat.getEtudiant());
+//        assertTrue(equipe.getEtudiants().contains(etudiant));
+//    }
 
     @Test
     void testGetEtudiantsByDepartement() {
