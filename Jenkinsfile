@@ -31,7 +31,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube analysis...'
-                withSonarQubeEnv('SonarQubeServerName') {
+                withSonarQubeEnv('Sonar') {
                     sh 'mvn sonar:sonar -X -Dsonar.projectKey=5DS2_G1_Kaddem'
                 }
             }
