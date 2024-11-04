@@ -21,6 +21,7 @@ public class Equipe implements Serializable {
     @JsonIgnore
     private List<Etudiant> etudiants;
 
+
     public Equipe() {}
 
     public Equipe(String nomEquipe, Niveau niveau) {
