@@ -11,13 +11,10 @@ import tn.esprit.spring.kaddem.repositories.EquipeRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-/**
- * Service Implementation for managing Equipe operations
- */
 @Slf4j
 @AllArgsConstructor
 @Service
@@ -52,6 +49,8 @@ public class EquipeServiceImpl implements IEquipeService {
     @Override
     public Equipe updateEquipe(Equipe equipe) {
         log.info("Updating team with ID: {}", equipe.getIdEquipe());
+        // Verify existence
+        retrieveEquipe(equipe.getIdEquipe());
         return equipeRepository.save(equipe);
     }
 
@@ -67,26 +66,16 @@ public class EquipeServiceImpl implements IEquipeService {
         log.info("Team evolution process completed");
     }
 
-    /**
-     * Checks if a team is eligible for evolution (JUNIOR or SENIOR level)
-     */
     private boolean isTeamEligibleForEvolution(Equipe equipe) {
         return equipe.getNiveau() == Niveau.JUNIOR ||
                 equipe.getNiveau() == Niveau.SENIOR;
     }
 
-    /**
-     * Evolves team level if qualified based on active contracts
-     */
     private void evolveTeamIfQualified(Equipe equipe) {
         if (countStudentsWithActiveContracts(equipe) >= 3) {
             evolveTeamLevel(equipe);
         }
     }
-
-    /**
-     * Counts students with active contracts in the team
-     * */
 
     private int countStudentsWithActiveContracts(Equipe equipe) {
         return (int) equipe.getEtudiants().stream()
@@ -94,43 +83,32 @@ public class EquipeServiceImpl implements IEquipeService {
                 .count();
     }
 
-    /**
-     * Checks if a student has an active contract longer than a year
-     */
-
     private boolean hasActiveYearLongContract(Etudiant etudiant) {
+        if (etudiant.getContrats() == null) return false;
         return etudiant.getContrats().stream()
                 .anyMatch(this::isContractActiveAndOlderThanYear);
     }
 
-
-    /**
-     * Checks if a contract is active and older than a year
-     * */
-
     private boolean isContractActiveAndOlderThanYear(Contrat contrat) {
-        return !contrat.getArchive() && ChronoUnit.YEARS.between(
-                contrat.getDateFinContrat().toInstant(),
-                LocalDate.now().atStartOfDay()
-        ) > 1;
+        if (contrat.getArchive() || contrat.getDateFinContrat() == null) return false;
+        LocalDate contractEndDate = contrat.getDateFinContrat().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        return !contrat.getArchive() &&
+                LocalDate.now().minusYears(1).isAfter(contractEndDate);
     }
 
-
-    /**
-     * Evolves the team's level based on current level
-     */
     private void evolveTeamLevel(Equipe equipe) {
-        Niveau currentLevel = equipe.getNiveau();
-        if (currentLevel == Niveau.JUNIOR) {
-            updateTeamLevel(equipe, Niveau.SENIOR);
-        } else if (currentLevel == Niveau.SENIOR) {
-            updateTeamLevel(equipe, Niveau.EXPERT);
+        switch (equipe.getNiveau()) {
+            case JUNIOR:
+                updateTeamLevel(equipe, Niveau.SENIOR);
+                break;
+            case SENIOR:
+                updateTeamLevel(equipe, Niveau.EXPERT);
+                break;
         }
     }
 
-    /**
-     * Updates team's level and saves to repository
-     */
     private void updateTeamLevel(Equipe equipe, Niveau newLevel) {
         log.info("Evolving team {} from {} to {}",
                 equipe.getNomEquipe(), equipe.getNiveau(), newLevel);

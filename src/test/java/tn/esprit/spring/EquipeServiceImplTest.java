@@ -9,16 +9,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import tn.esprit.spring.kaddem.entities.*;
 import tn.esprit.spring.kaddem.repositories.EquipeRepository;
 import tn.esprit.spring.kaddem.services.EquipeServiceImpl;
-import java.util.*;
+
 import javax.persistence.EntityNotFoundException;
-import java.util.Calendar;
+import java.util.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EquipeServiceImplTest {
+class EquipeServiceImplTest {
 
     @Mock
     private EquipeRepository equipeRepository;
@@ -26,62 +28,98 @@ public class EquipeServiceImplTest {
     @InjectMocks
     private EquipeServiceImpl equipeService;
 
-    private Equipe equipe1;
-    private Etudiant etudiant1;
-    private Contrat contrat1;
+    private Equipe equipe;
+    private Etudiant etudiant;
+    private Contrat contrat;
 
     @BeforeEach
     void setUp() {
-        // Initialize first equipe
-        equipe1 = new Equipe();
-        equipe1.setIdEquipe(1);
-        equipe1.setNomEquipe("Team A");
-        equipe1.setNiveau(Niveau.JUNIOR);
-        equipe1.setEtudiants(new HashSet<>());
+        // Initialize base test data
+        equipe = new Equipe();
+        equipe.setIdEquipe(1);
+        equipe.setNomEquipe("Test Team");
+        equipe.setNiveau(Niveau.JUNIOR);
 
-        // Initialize student
-        etudiant1 = new Etudiant();
-        etudiant1.setIdEtudiant(1);
-        etudiant1.setPrenomE("John");
-        etudiant1.setNomE("Doe");
-        etudiant1.setOp(Option.GAMIX);
+        etudiant = new Etudiant();
+        etudiant.setIdEtudiant(1);
+        etudiant.setNomE("Test");
+        etudiant.setPrenomE("Student");
 
-        // Initialize contract with proper dates
-        contrat1 = new Contrat();
-        contrat1.setIdContrat(1);
-        contrat1.setMontantContrat(1200);
-        contrat1.setArchive(false);
-
-        // Set contract dates for more than a year ago
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, -2); // 2 years ago
-        contrat1.setDateFinContrat(calendar.getTime());
+        contrat = new Contrat();
+        contrat.setIdContrat(1);
+        contrat.setArchive(false);
+        // Set contract end date to 2 years ago
+        Date endDate = Date.from(LocalDate.now().minusYears(2)
+                .atStartOfDay(ZoneId.systemDefault()).toInstant());
+        contrat.setDateFinContrat(endDate);
 
         // Setup relationships
         Set<Contrat> contrats = new HashSet<>();
-        contrats.add(contrat1);
-        etudiant1.setContrats(contrats);
-        contrat1.setEtudiant(etudiant1);
+        contrats.add(contrat);
+        etudiant.setContrats(contrats);
 
-        Set<Etudiant> etudiants = new HashSet<>();
-        etudiants.add(etudiant1);
-        equipe1.setEtudiants(etudiants);
+        List<Etudiant> etudiants = new ArrayList<>();
+        etudiants.add(etudiant);
+        equipe.setEtudiants(etudiants);
     }
 
+    // Mockito-based tests
     @Test
     void testAddEquipe() {
-        when(equipeRepository.save(any(Equipe.class))).thenReturn(equipe1);
+        when(equipeRepository.save(any(Equipe.class))).thenReturn(equipe);
 
-        Equipe savedEquipe = equipeService.addEquipe(equipe1);
+        Equipe result = equipeService.addEquipe(equipe);
 
-        assertNotNull(savedEquipe);
-        assertEquals("Team A", savedEquipe.getNomEquipe());
+        assertNotNull(result);
+        assertEquals("Test Team", result.getNomEquipe());
         verify(equipeRepository).save(any(Equipe.class));
     }
 
     @Test
+    void testRetrieveEquipe() {
+        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
+
+        Equipe result = equipeService.retrieveEquipe(1);
+
+        assertNotNull(result);
+        assertEquals(1, result.getIdEquipe());
+        verify(equipeRepository).findById(1);
+    }
+
+    @Test
+    void testRetrieveEquipe_NotFound() {
+        when(equipeRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () ->
+                equipeService.retrieveEquipe(1)
+        );
+    }
+
+    @Test
+    void testUpdateEquipe() {
+        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
+        when(equipeRepository.save(any(Equipe.class))).thenReturn(equipe);
+
+        equipe.setNomEquipe("Updated Team");
+        Equipe result = equipeService.updateEquipe(equipe);
+
+        assertEquals("Updated Team", result.getNomEquipe());
+        verify(equipeRepository).save(any(Equipe.class));
+    }
+
+    @Test
+    void testDeleteEquipe() {
+        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
+        doNothing().when(equipeRepository).delete(any(Equipe.class));
+
+        equipeService.deleteEquipe(1);
+
+        verify(equipeRepository).delete(any(Equipe.class));
+    }
+
+    @Test
     void testRetrieveAllEquipes() {
-        List<Equipe> equipes = Collections.singletonList(equipe1);
+        List<Equipe> equipes = Arrays.asList(equipe);
         when(equipeRepository.findAll()).thenReturn(equipes);
 
         List<Equipe> result = equipeService.retrieveAllEquipes();
@@ -92,37 +130,91 @@ public class EquipeServiceImplTest {
     }
 
     @Test
-    void testDeleteEquipe() {
-        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe1));
-        doNothing().when(equipeRepository).delete(any(Equipe.class));
+    void testEvoluerEquipes_JuniorToSenior() {
+        // Setup three students with valid contracts
+        List<Etudiant> etudiants = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Etudiant e = new Etudiant();
+            Contrat c = new Contrat();
+            c.setArchive(false);
+            c.setDateFinContrat(Date.from(LocalDate.now().minusYears(2)
+                    .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            Set<Contrat> studentContracts = new HashSet<>();
+            studentContracts.add(c);
+            e.setContrats(studentContracts);
+            etudiants.add(e);
+        }
 
-        equipeService.deleteEquipe(1);
+        equipe.setEtudiants(etudiants);
+        equipe.setNiveau(Niveau.JUNIOR);
 
-        verify(equipeRepository).findById(1);
-        verify(equipeRepository).delete(any(Equipe.class));
+        when(equipeRepository.findAll()).thenReturn(Collections.singletonList(equipe));
+        when(equipeRepository.save(any(Equipe.class))).thenReturn(equipe);
+
+        equipeService.evoluerEquipes();
+
+        assertEquals(Niveau.SENIOR, equipe.getNiveau());
+        verify(equipeRepository).save(any(Equipe.class));
+    }
+
+    // Pure JUnit tests (no mocks)
+    @Test
+    void testEquipeConstructor() {
+        String teamName = "Test Team";
+        Niveau niveau = Niveau.JUNIOR;
+
+        Equipe equipe = new Equipe(teamName, niveau);
+
+        assertNotNull(equipe);
+        assertEquals(teamName, equipe.getNomEquipe());
+        assertEquals(niveau, equipe.getNiveau());
     }
 
     @Test
-    void testDeleteEquipe_ThrowsException() {
-        when(equipeRepository.findById(1)).thenReturn(Optional.empty());
+    void testEquipeSettersAndGetters() {
+        Equipe equipe = new Equipe();
+        Integer id = 1;
+        String name = "Test Team";
+        Niveau niveau = Niveau.SENIOR;
+        List<Etudiant> etudiants = new ArrayList<>();
 
-        assertThrows(EntityNotFoundException.class, () ->
-                equipeService.deleteEquipe(1)
-        );
+        equipe.setIdEquipe(id);
+        equipe.setNomEquipe(name);
+        equipe.setNiveau(niveau);
+        equipe.setEtudiants(etudiants);
 
-        verify(equipeRepository).findById(1);
-        verify(equipeRepository, never()).delete(any(Equipe.class));
+        assertEquals(id, equipe.getIdEquipe());
+        assertEquals(name, equipe.getNomEquipe());
+        assertEquals(niveau, equipe.getNiveau());
+        assertEquals(etudiants, equipe.getEtudiants());
     }
 
     @Test
-    void testRetrieveEquipe() {
-        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe1));
+    void testEquipeDTO() {
+        Integer id = 1;
+        String name = "Test Team";
+        String niveau = "SENIOR";
 
-        Equipe foundEquipe = equipeService.retrieveEquipe(1);
+        EquipeDTO dto = new EquipeDTO(id, name, niveau);
 
-        assertNotNull(foundEquipe);
-        assertEquals(1, foundEquipe.getIdEquipe());
-        assertEquals("Team A", foundEquipe.getNomEquipe());
-        verify(equipeRepository).findById(1);
+        assertEquals(id, dto.getIdEquipe());
+        assertEquals(name, dto.getNomEquipe());
+        assertEquals(niveau, dto.getNiveau());
+    }
+
+    @Test
+    void testEquipeDTOSettersAndGetters() {
+        EquipeDTO dto = new EquipeDTO();
+        Integer id = 1;
+        String name = "Test Team";
+        String niveau = "EXPERT";
+
+        dto.setIdEquipe(id);
+        dto.setNomEquipe(name);
+        dto.setNiveau(niveau);
+
+        assertEquals(id, dto.getIdEquipe());
+        assertEquals(name, dto.getNomEquipe());
+        assertEquals(niveau, dto.getNiveau());
     }
 }
