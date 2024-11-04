@@ -19,8 +19,6 @@ public class UniversiteServiceImpl implements IUniversiteService {
 
     @Autowired
     UniversiteRepository universiteRepository;
-
-    @Autowired
     DepartementRepository departementRepository;
 
     public UniversiteServiceImpl() {
