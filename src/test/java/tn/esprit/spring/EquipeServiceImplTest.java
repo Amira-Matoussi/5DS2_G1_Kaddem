@@ -22,53 +22,50 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class EquipeServiceImplTest {
 
+
     @Mock
     private EquipeRepository equipeRepository;
 
     @InjectMocks
     private EquipeServiceImpl equipeService;
 
-    private Equipe equipe;
-    private Etudiant etudiant;
-    private Contrat contrat;
+    private Equipe testEquipe;
+    private Etudiant testEtudiant;
+    private Contrat testContrat;
 
     @BeforeEach
     void setUp() {
-        // Initialize base test data
-        equipe = new Equipe();
-        equipe.setIdEquipe(1);
-        equipe.setNomEquipe("Test Team");
-        equipe.setNiveau(Niveau.JUNIOR);
+        testEquipe = new Equipe();
+        testEquipe.setIdEquipe(1);
+        testEquipe.setNomEquipe("Test Team");
+        testEquipe.setNiveau(Niveau.JUNIOR);
 
-        etudiant = new Etudiant();
-        etudiant.setIdEtudiant(1);
-        etudiant.setNomE("Test");
-        etudiant.setPrenomE("Student");
+        testEtudiant = new Etudiant();
+        testEtudiant.setIdEtudiant(1);
+        testEtudiant.setNomE("Test");
+        testEtudiant.setPrenomE("Student");
 
-        contrat = new Contrat();
-        contrat.setIdContrat(1);
-        contrat.setArchive(false);
-        // Set contract end date to 2 years ago
-        Date endDate = Date.from(LocalDate.now().minusYears(2)
-                .atStartOfDay(ZoneId.systemDefault()).toInstant());
-        contrat.setDateFinContrat(endDate);
+        testContrat = new Contrat();
+        testContrat.setIdContrat(1);
+        testContrat.setArchive(false);
+        Date endDate = Date.from(LocalDate.now().minusYears(2).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        testContrat.setDateFinContrat(endDate);
 
-        // Setup relationships
         Set<Contrat> contrats = new HashSet<>();
-        contrats.add(contrat);
-        etudiant.setContrats(contrats);
+        contrats.add(testContrat);
+        testEtudiant.setContrats(contrats);
 
         List<Etudiant> etudiants = new ArrayList<>();
-        etudiants.add(etudiant);
-        equipe.setEtudiants(etudiants);
+        etudiants.add(testEtudiant);
+        testEquipe.setEtudiants(etudiants);
     }
 
     // Mockito-based tests
     @Test
     void testAddEquipe() {
-        when(equipeRepository.save(any(Equipe.class))).thenReturn(equipe);
+        when(equipeRepository.save(any(Equipe.class))).thenReturn(testEquipe);
 
-        Equipe result = equipeService.addEquipe(equipe);
+        Equipe result = equipeService.addEquipe(testEquipe);
 
         assertNotNull(result);
         assertEquals("Test Team", result.getNomEquipe());
@@ -77,7 +74,7 @@ class EquipeServiceImplTest {
 
     @Test
     void testRetrieveEquipe() {
-        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
+        when(equipeRepository.findById(1)).thenReturn(Optional.of(testEquipe));
 
         Equipe result = equipeService.retrieveEquipe(1);
 
@@ -97,11 +94,11 @@ class EquipeServiceImplTest {
 
     @Test
     void testUpdateEquipe() {
-        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
-        when(equipeRepository.save(any(Equipe.class))).thenReturn(equipe);
+        when(equipeRepository.findById(1)).thenReturn(Optional.of(testEquipe));
+        when(equipeRepository.save(any(Equipe.class))).thenReturn(testEquipe);
 
-        equipe.setNomEquipe("Updated Team");
-        Equipe result = equipeService.updateEquipe(equipe);
+        testEquipe.setNomEquipe("Updated Team");
+        Equipe result = equipeService.updateEquipe(testEquipe);
 
         assertEquals("Updated Team", result.getNomEquipe());
         verify(equipeRepository).save(any(Equipe.class));
@@ -109,7 +106,7 @@ class EquipeServiceImplTest {
 
     @Test
     void testDeleteEquipe() {
-        when(equipeRepository.findById(1)).thenReturn(Optional.of(equipe));
+        when(equipeRepository.findById(1)).thenReturn(Optional.of(testEquipe));
         doNothing().when(equipeRepository).delete(any(Equipe.class));
 
         equipeService.deleteEquipe(1);
@@ -119,7 +116,7 @@ class EquipeServiceImplTest {
 
     @Test
     void testRetrieveAllEquipes() {
-        List<Equipe> equipes = Arrays.asList(equipe);
+        List<Equipe> equipes = Arrays.asList(testEquipe);
         when(equipeRepository.findAll()).thenReturn(equipes);
 
         List<Equipe> result = equipeService.retrieveAllEquipes();
@@ -145,15 +142,15 @@ class EquipeServiceImplTest {
             etudiants.add(e);
         }
 
-        equipe.setEtudiants(etudiants);
-        equipe.setNiveau(Niveau.JUNIOR);
+        testEquipe.setEtudiants(etudiants);
+        testEquipe.setNiveau(Niveau.JUNIOR);
 
-        when(equipeRepository.findAll()).thenReturn(Collections.singletonList(equipe));
-        when(equipeRepository.save(any(Equipe.class))).thenReturn(equipe);
+        when(equipeRepository.findAll()).thenReturn(Collections.singletonList(testEquipe));
+        when(equipeRepository.save(any(Equipe.class))).thenReturn(testEquipe);
 
         equipeService.evoluerEquipes();
 
-        assertEquals(Niveau.SENIOR, equipe.getNiveau());
+        assertEquals(Niveau.SENIOR, testEquipe.getNiveau());
         verify(equipeRepository).save(any(Equipe.class));
     }
 

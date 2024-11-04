@@ -1,22 +1,19 @@
 package tn.esprit.spring.kaddem.controllers;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.spring.kaddem.entities.DetailEquipe;
+
 import tn.esprit.spring.kaddem.entities.Equipe;
-import tn.esprit.spring.kaddem.entities.Etudiant;
+
 import tn.esprit.spring.kaddem.entities.EquipeDTO;
 import tn.esprit.spring.kaddem.entities.Niveau;
 import tn.esprit.spring.kaddem.services.IEquipeService;
 
-import javax.validation.Valid;
+
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @RestController
 @AllArgsConstructor

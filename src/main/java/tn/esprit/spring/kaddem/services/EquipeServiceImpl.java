@@ -1,3 +1,4 @@
+// EquipeServiceImpl.java
 package tn.esprit.spring.kaddem.services;
 
 import lombok.AllArgsConstructor;
@@ -67,8 +68,7 @@ public class EquipeServiceImpl implements IEquipeService {
     }
 
     private boolean isTeamEligibleForEvolution(Equipe equipe) {
-        return equipe.getNiveau() == Niveau.JUNIOR ||
-                equipe.getNiveau() == Niveau.SENIOR;
+        return equipe.getNiveau() == Niveau.JUNIOR || equipe.getNiveau() == Niveau.SENIOR;
     }
 
     private void evolveTeamIfQualified(Equipe equipe) {
@@ -84,29 +84,36 @@ public class EquipeServiceImpl implements IEquipeService {
     }
 
     private boolean hasActiveYearLongContract(Etudiant etudiant) {
-        if (etudiant.getContrats() == null) return false;
+        if (etudiant.getContrats() == null) {
+            return false;
+        }
         return etudiant.getContrats().stream()
                 .anyMatch(this::isContractActiveAndOlderThanYear);
     }
 
     private boolean isContractActiveAndOlderThanYear(Contrat contrat) {
-        if (contrat.getArchive() || contrat.getDateFinContrat() == null) return false;
-        LocalDate contractEndDate = contrat.getDateFinContrat().toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        LocalDate contractEndDate = contrat.getDateFinContrat() == null
+                ? null
+                : contrat.getDateFinContrat().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
         return !contrat.getArchive() &&
+                contractEndDate != null &&
                 LocalDate.now().minusYears(1).isAfter(contractEndDate);
     }
 
     private void evolveTeamLevel(Equipe equipe) {
-        switch (equipe.getNiveau()) {
-            case JUNIOR:
-                updateTeamLevel(equipe, Niveau.SENIOR);
-                break;
-            case SENIOR:
-                updateTeamLevel(equipe, Niveau.EXPERT);
-                break;
+        Niveau currentLevel = equipe.getNiveau();
+        Niveau newLevel;
+
+        if (currentLevel == Niveau.JUNIOR) {
+            newLevel = Niveau.SENIOR;
+        } else if (currentLevel == Niveau.SENIOR) {
+            newLevel = Niveau.EXPERT;
+        } else {
+            return; // No evolution needed for other levels
         }
+
+        updateTeamLevel(equipe, newLevel);
     }
 
     private void updateTeamLevel(Equipe equipe, Niveau newLevel) {
