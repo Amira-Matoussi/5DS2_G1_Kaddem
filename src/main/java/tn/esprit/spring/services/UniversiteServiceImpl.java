@@ -16,7 +16,7 @@ public class UniversiteServiceImpl implements IUniversiteService{
     private final UniversiteRepository universiteRepository;
     private final DepartementRepository departementRepository;
 
-    // Constructor injection for both repositories..
+    // Constructor injection for both repositories
     @Autowired
     public UniversiteServiceImpl(UniversiteRepository universiteRepository, DepartementRepository departementRepository) {
         this.universiteRepository = universiteRepository;
