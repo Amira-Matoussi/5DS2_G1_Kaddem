@@ -10,7 +10,7 @@ services:
       - /home/mysql/data:/var/lib/mysql
 
   spring_app:
-    image: yasslaab/alpine
+    image: yasslaab/alpine:37
     container_name: devopscontainer
     restart: on-failure
     ports:
