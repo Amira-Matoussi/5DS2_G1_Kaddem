@@ -26,7 +26,6 @@ public class EquipeRestController {
 		return equipeService.retrieveEquipe(equipeId);
 	}
 
-
 	// http://localhost:8089/Kaddem/equipe/add-equipe
 	@PostMapping("/add-equipe")
 	public Equipe addEquipe(@RequestBody Equipe e) {
