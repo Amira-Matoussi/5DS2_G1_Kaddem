@@ -10,10 +10,10 @@ services:
       - /home/mysql/data:/var/lib/mysql
 
   spring_app:
-    image: boujelbenezaineb/zainebboujelbene_5ds2_g1_kaddem:latest  # Using latest tag here
+    image: boujelbenezaineb/zainebboujelbene_5ds2_g1_kaddem:latest  # Using latest tag here instead of tag 1.0
     container_name: devopscontainer
     restart: on-failure
     ports:
-      - 9096:9096  # Ensure  this matches the port exposed in Dockerfile which is 9096and server.port in application.properties
+      - 9096:9096  # Ensure  this matches the port exposed in Dockerfile which is 9096 and server.port in application.properties
     depends_on:
       - mysqldb
