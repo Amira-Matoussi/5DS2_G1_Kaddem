@@ -13,6 +13,7 @@
     <version>0.0.1</version>
     <name>kaddem</name>
     <description>kaddem</description>
+    <packaging>jar</packaging>
     <properties>
              <java.version>1.8</java.version>
              <sonar.host.url>http://192.168.1.21:9000</sonar.host.url>
