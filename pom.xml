@@ -30,6 +30,12 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
             <version>1.9.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.6.1</version> <!-- Or latest stable version -->
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
