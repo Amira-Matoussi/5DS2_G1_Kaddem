@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysqldb:
     image: mysql:5.7
@@ -15,7 +13,7 @@ services:
   Kaddem:
     depends_on:
       - mysqldb
-    image: khaledchaabouni1998/kaddem:1.0.0  # Update to the correct image path
+    image: khaledchaabouni1998/kaddem:1.0.0
     restart: on-failure
     ports:
       - 8089:8089
@@ -33,19 +31,17 @@ services:
   prometheus:
     image: prom/prometheus
     ports:
-      - "9091:9090"
+      - 9090:9090
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-  
+
   grafana:
     image: grafana/grafana
     ports:
-      - "3001:3000"  # Change this line to use a different host port
+      - "3001:3000"
     volumes:
       - grafana_data:/var/lib/grafana
 
-
 volumes:
   db:
+  grafana_data:
