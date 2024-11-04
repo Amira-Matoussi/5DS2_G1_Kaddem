@@ -16,3 +16,4 @@ public interface IDepartementService {
     public  void deleteDepartement(Integer idDepartement);
 
 }
+
