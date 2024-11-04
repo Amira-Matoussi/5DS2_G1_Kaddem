@@ -3,7 +3,7 @@ package tn.esprit.spring.kaddem.entities;
 import java.io.Serializable;
 
 public class UniversiteDTO implements Serializable {
-    private String nomUniv; // Match the entity field name
+    private String nomUniv; // Match the entity field name of univ
 
     // Default constructor
     public UniversiteDTO() {}
