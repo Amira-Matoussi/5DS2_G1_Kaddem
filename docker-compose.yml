@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mysqldb:
     image: mysql:5.7
@@ -15,7 +13,7 @@ services:
   Kaddem:
     depends_on:
       - mysqldb
-    image: khaledchaabouni/5ds2_g1_kaddem:1.0.0
+    image: khaledchaabouni1998/kaddem:1.0.0  # Update to the correct image path
     restart: on-failure
     ports:
       - 8089:8089
