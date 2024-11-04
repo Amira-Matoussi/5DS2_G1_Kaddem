@@ -3,7 +3,7 @@ package tn.esprit.spring.kaddem.services;
 import tn.esprit.spring.kaddem.entities.Departement;
 
 import java.util.List;
-//test
+
 public interface IDepartementService {
     public List<Departement> retrieveAllDepartements();
 
