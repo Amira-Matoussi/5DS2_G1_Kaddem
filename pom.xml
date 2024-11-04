@@ -57,9 +57,6 @@
         <url>http://192.168.1.21:8081/repository/maven-releases/</url>
  </repository>
 </distributionManagement>
-<properties>
-    <sonar.host.url>http://192.168.1.21:9000</sonar.host.url>
-</properties>
 
 <build>
     <plugins>
