@@ -1,18 +1,14 @@
 package tn.esprit.spring.kaddem.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
-
 import javax.persistence.*;
-
 
 @SuppressWarnings("SpellCheckingInspection")
 @Entity
-public class Etudiant implements Serializable{
+public class Etudiant implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer idEtudiant;
@@ -20,21 +16,20 @@ public class Etudiant implements Serializable{
     private String prenomE;
     @Enumerated(EnumType.STRING)
     private Option op;
+
     @OneToMany(mappedBy="etudiant", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Contrat> Contrats;
+    private Set<Contrat> contrats;  // Renamed from Contrats to contrats
+
     @ManyToOne
     @JsonIgnore
     private Departement departement;
-  //  @ManyToMany(cascade =CascadeType.ALL)
-    @ManyToMany(mappedBy="etudiants")
 
+    @ManyToMany(mappedBy="etudiants")
     @JsonIgnore
-  //  private Set<Equipe> equipes ;
-    private List<Equipe> equipes ;
-    public Etudiant() {
-        // TODO Auto-generated constructor stub
-    }
+    private List<Equipe> equipes;
+
+    public Etudiant() {}
 
     public Etudiant(String nomE, String prenomE) {
         this.nomE = nomE;
@@ -57,11 +52,11 @@ public class Etudiant implements Serializable{
     }
 
     public Set<Contrat> getContrats() {
-        return Contrats;
+        return contrats;
     }
 
     public void setContrats(Set<Contrat> contrats) {
-        Contrats = contrats;
+        this.contrats = contrats;
     }
 
     public Departement getDepartement() {
@@ -83,26 +78,32 @@ public class Etudiant implements Serializable{
     public Integer getIdEtudiant() {
         return idEtudiant;
     }
+
     public void setIdEtudiant(Integer idEtudiant) {
         this.idEtudiant = idEtudiant;
     }
+
     public String getNomE() {
         return nomE;
     }
+
     public void setNomE(String nomE) {
         this.nomE = nomE;
     }
+
     public String getPrenomE() {
         return prenomE;
     }
+
     public void setPrenomE(String prenomE) {
         this.prenomE = prenomE;
     }
+
     public Option getOp() {
         return op;
     }
+
     public void setOp(Option op) {
         this.op = op;
     }
-
 }
