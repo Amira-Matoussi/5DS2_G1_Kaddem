@@ -12,7 +12,7 @@ import tn.esprit.spring.kaddem.entities.DetailEquipe;
 import tn.esprit.spring.kaddem.entities.Equipe;
 
 @ExtendWith(MockitoExtension.class)
-public class TestDetailEquipeImpl {
+ class TestDetailEquipeImpl {
 
     @InjectMocks
     private DetailEquipe detailEquipe; // This will be instantiated with mocked dependencies
@@ -26,41 +26,41 @@ public class TestDetailEquipeImpl {
     }
 
     @Test
-    public void testGetIdDetailEquipe() {
+    void testGetIdDetailEquipe() {
         assertEquals(1, detailEquipe.getIdDetailEquipe());
     }
 
     @Test
-    public void testGetSalle() {
+     void testGetSalle() {
         assertEquals(101, detailEquipe.getSalle());
     }
 
     @Test
-    public void testGetThematique() {
+     void testGetThematique() {
         assertEquals("Team Strategy", detailEquipe.getThematique());
     }
 
     @Test
-    public void testSetSalle() {
+     void testSetSalle() {
         detailEquipe.setSalle(102);
         assertEquals(102, detailEquipe.getSalle());
     }
 
     @Test
-    public void testSetThematique() {
+     void testSetThematique() {
         detailEquipe.setThematique("New Team Strategy");
         assertEquals("New Team Strategy", detailEquipe.getThematique());
     }
 
     @Test
-    public void testSetEquipe() {
+     void testSetEquipe() {
         // Using the mocked equipe
         detailEquipe.setEquipe(equipe);
         assertEquals(equipe, detailEquipe.getEquipe());
     }
 
     @Test
-    public void testDetailEquipeConstructor() {
+     void testDetailEquipeConstructor() {
         DetailEquipe newDetailEquipe = new DetailEquipe(2, 201, "Team Tactics");
         assertEquals(2, newDetailEquipe.getIdDetailEquipe());
         assertEquals(201, newDetailEquipe.getSalle());

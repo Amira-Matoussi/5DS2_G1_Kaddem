@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 
 public class DetailEquipeServiceImpl implements IDetailEquipeService{
+    private final DetailEquipeRepository detailEquipeRepository;
+
     @Autowired
-    private DetailEquipeRepository detailEquipeRepository;
+    public DetailEquipeServiceImpl(DetailEquipeRepository detailEquipeRepository) {
+        this.detailEquipeRepository = detailEquipeRepository;
+    }
 
     @Override
     public DetailEquipe addDetailEquipe(DetailEquipe detailEquipe) {

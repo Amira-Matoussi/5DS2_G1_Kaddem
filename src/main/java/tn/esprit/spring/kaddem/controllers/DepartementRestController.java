@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.kaddem.entities.Departement;
 import tn.esprit.spring.kaddem.services.IDepartementService;
+import tn.esprit.spring.kaddem.dto.DepartmentDTO;
 
 import java.util.List;
 
@@ -15,8 +16,7 @@ public class DepartementRestController {
 	// http://localhost:8089/Kaddem/departement/retrieve-all-departements
 	@GetMapping("/retrieve-all-departements")
 	public List<Departement> getDepartements() {
-		List<Departement> listDepartements = departementService.retrieveAllDepartements();
-		return listDepartements;
+		return departementService.retrieveAllDepartements();
 	}
 	// http://localhost:8089/Kaddem/departement/retrieve-departement/8
 	@GetMapping("/retrieve-departement/{departement-id}")
@@ -26,11 +26,11 @@ public class DepartementRestController {
 
 	// http://localhost:8089/Kaddem/departement/add-departement
 	@PostMapping("/add-departement")
-	public Departement addDepartement(@RequestBody Departement d) {
-		Departement departement = departementService.addDepartement(d);
-		return departement;
+	public Departement addDepartement(@RequestBody DepartmentDTO departementDTO) {
+		Departement departement = new Departement();
+		departement.setNomDepart(departementDTO.getNomDepart());
+		return departementService.addDepartement(departement);
 	}
-
 	// http://localhost:8089/Kaddem/departement/remove-departement/1
 	@DeleteMapping("/remove-departement/{departement-id}")
 	public void removeDepartement(@PathVariable("departement-id") Integer departementId) {
@@ -39,9 +39,14 @@ public class DepartementRestController {
 
 	// http://localhost:8089/Kaddem/departement/update-departement
 	@PutMapping("/update-departement")
-	public Departement updateDepartement(@RequestBody Departement e) {
-		Departement departement= departementService.updateDepartement(e);
-		return departement;
+	public Departement updateDepartement(@RequestBody DepartmentDTO departementDTO) {
+		Departement departement = new Departement();
+		departement.setIdDepart(departementDTO.getIdDepart());
+		departement.setNomDepart(departementDTO.getNomDepart());
+
+		// Add any other fields as necessary
+
+		return departementService.updateDepartement(departement);
 	}
 }
 

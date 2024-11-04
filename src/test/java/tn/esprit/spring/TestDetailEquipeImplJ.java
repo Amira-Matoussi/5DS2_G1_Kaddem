@@ -7,51 +7,51 @@ import org.junit.jupiter.api.Test;
 import tn.esprit.spring.kaddem.entities.DetailEquipe;
 import tn.esprit.spring.kaddem.entities.Equipe;
 
-public class TestDetailEquipeImplJ {
+ class TestDetailEquipeImplJ {
 
     private DetailEquipe detailEquipe; // This will be a real instance of DetailEquipe
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         detailEquipe = new DetailEquipe(1, 101, "Team Strategy"); // Create a new instance for testing
     }
 
     @Test
-    public void testGetIdDetailEquipe() {
+     void testGetIdDetailEquipe() {
         assertEquals(1, detailEquipe.getIdDetailEquipe());
     }
 
     @Test
-    public void testGetSalle() {
+    void testGetSalle() {
         assertEquals(101, detailEquipe.getSalle());
     }
 
     @Test
-    public void testGetThematique() {
+     void testGetThematique() {
         assertEquals("Team Strategy", detailEquipe.getThematique());
     }
 
     @Test
-    public void testSetSalle() {
+    void testSetSalle() {
         detailEquipe.setSalle(102);
         assertEquals(102, detailEquipe.getSalle());
     }
 
     @Test
-    public void testSetThematique() {
+     void testSetThematique() {
         detailEquipe.setThematique("New Team Strategy");
         assertEquals("New Team Strategy", detailEquipe.getThematique());
     }
 
     @Test
-    public void testSetEquipe() {
+     void testSetEquipe() {
         Equipe equipe = new Equipe(); // Create a new instance of Equipe
         detailEquipe.setEquipe(equipe);
         assertEquals(equipe, detailEquipe.getEquipe());
     }
 
     @Test
-    public void testDetailEquipeConstructor() {
+     void testDetailEquipeConstructor() {
         DetailEquipe newDetailEquipe = new DetailEquipe(2, 201, "Team Tactics");
         assertEquals(2, newDetailEquipe.getIdDetailEquipe());
         assertEquals(201, newDetailEquipe.getSalle());
