@@ -1,55 +1,49 @@
 package tn.esprit.spring.kaddem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.*;
-
 @Entity
-public class Departement implements Serializable{
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Departement implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idDepart;
+
+    @Column(name = "nom_depart")
     private String nomDepart;
-    @OneToMany(mappedBy="departement")
+
+    @OneToMany(mappedBy = "departement", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Etudiant> etudiants;
-    public Departement() {
-        // TODO Auto-generated constructor stub
-    }
 
+    // Constructor with nomDepart parameter
     public Departement(String nomDepart) {
-        super();
         this.nomDepart = nomDepart;
     }
 
+    // Constructor with idDepart and nomDepart parameters
     public Departement(Integer idDepart, String nomDepart) {
-        super();
         this.idDepart = idDepart;
         this.nomDepart = nomDepart;
     }
 
-    public Set<Etudiant> getEtudiants() {
-        return etudiants;
+    // Override toString() method for better logging and debugging
+    @Override
+    public String toString() {
+        return "Departement{" +
+                "idDepart=" + idDepart +
+                ", nomDepart='" + nomDepart + '\'' +
+                '}';
     }
-
-    public void setEtudiants(Set<Etudiant> etudiants) {
-        this.etudiants = etudiants;
-    }
-
-    public Integer getIdDepart() {
-        return idDepart;
-    }
-    public void setIdDepart(Integer idDepart) {
-        this.idDepart = idDepart;
-    }
-    public String getNomDepart() {
-        return nomDepart;
-    }
-    public void setNomDepart(String nomDepart) {
-        this.nomDepart = nomDepart;
-    }
-
 }
