@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Equipe;
+import tn.esprit.spring.entities.EquipeDTO;
+import tn.esprit.spring.entities.Niveau;
 import tn.esprit.spring.services.IEquipeService;
 
 import java.util.List;
@@ -26,9 +28,16 @@ public class EquipeRestController {
 
 	// http://localhost:8089/Kaddem/equipe/add-equipe
 	@PostMapping("/add-equipe")
-	public Equipe addEquipe(@RequestBody Equipe e) {
-		return equipeService.addEquipe(e);
+	public Equipe addEquipe(@RequestBody EquipeDTO equipeDTO) {
+		Equipe equipe = new Equipe();
+		equipe.setNomEquipe(equipeDTO.getNomEquipe());
+		equipe.setNiveau(Niveau.valueOf(equipeDTO.getNiveau())); // Assuming Niveau is an enum
+
+		// Add other fields as necessary
+
+		return equipeService.addEquipe(equipe);
 	}
+
 
 	// http://localhost:8089/Kaddem/equipe/remove-equipe/1
 	@DeleteMapping("/remove-equipe/{equipe-id}")
@@ -38,8 +47,15 @@ public class EquipeRestController {
 
 	// http://localhost:8089/Kaddem/equipe/update-equipe
 	@PutMapping("/update-equipe")
-	public Equipe updateEquipe(@RequestBody Equipe e) {
-		return equipeService.updateEquipe(e);
+	public Equipe updateEquipe(@RequestBody EquipeDTO equipeDTO) {
+		Equipe equipe = new Equipe();
+		equipe.setIdEquipe(equipeDTO.getIdEquipe());
+		equipe.setNomEquipe(equipeDTO.getNomEquipe());
+		equipe.setNiveau(Niveau.valueOf(equipeDTO.getNiveau())); // Assuming Niveau is an enum
+
+		// Add other fields as necessary
+
+		return equipeService.updateEquipe(equipe);
 	}
 
 	@Scheduled(cron="0 0 13 * * *")
