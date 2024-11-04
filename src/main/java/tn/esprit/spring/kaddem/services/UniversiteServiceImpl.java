@@ -28,7 +28,7 @@ public class UniversiteServiceImpl implements IUniversiteService {
     }
 
     public List<Universite> retrieveAllUniversites() {
-        log.info("Retrieving all universities...");
+        log.info("Retrieving all universities..");
         List<Universite> universites = (List<Universite>) universiteRepository.findAll();
         log.debug("Retrieved {} universities", universites.size());
         return universites;
