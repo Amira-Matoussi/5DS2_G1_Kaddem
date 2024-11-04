@@ -1,5 +1,4 @@
 package tn.esprit.spring.kaddem.entities;
-
 import java.io.Serializable;
 
 import javax.persistence.*;
@@ -14,7 +13,7 @@ public class DetailEquipe implements Serializable{
     @OneToOne(mappedBy="detailEquipe")
     private Equipe equipe;
     public DetailEquipe() {
-        // TODO Auto-generated constructor stub
+
     }
 
     public DetailEquipe(Integer salle, String thematique) {

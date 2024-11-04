@@ -1,6 +1,5 @@
 package tn.esprit.spring.kaddem.services;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.kaddem.entities.Departement;
@@ -8,94 +7,76 @@ import tn.esprit.spring.kaddem.entities.Universite;
 import tn.esprit.spring.kaddem.repositories.DepartementRepository;
 import tn.esprit.spring.kaddem.repositories.UniversiteRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.Optional;
 
 @Service
-@Slf4j
-public class UniversiteServiceImpl implements IUniversiteService {
+public class UniversiteServiceImpl implements IUniversiteService{
+    private final UniversiteRepository universiteRepository;
+    private final DepartementRepository departementRepository;
 
+    // Constructor injection for both repositories
     @Autowired
-    UniversiteRepository universiteRepository;
-    DepartementRepository departementRepository;
-
+    public UniversiteServiceImpl(UniversiteRepository universiteRepository, DepartementRepository departementRepository) {
+        this.universiteRepository = universiteRepository;
+        this.departementRepository = departementRepository;
+    }
     public UniversiteServiceImpl() {
-        log.debug("UniversiteServiceImpl instantiated.");
+        // The default constructor is intentionally left empty.
+        // It may be used for frameworks or libraries that require a no-argument constructor.
+        // However, this service should not be instantiated without providing necessary dependencies.
+        // Therefore, an UnsupportedOperationException is thrown to prevent misuse.
+        throw new UnsupportedOperationException("This service should not be instantiated directly. Use dependency injection.");
+    }
+    public   List<Universite> retrieveAllUniversites(){
+        return (List<Universite>) universiteRepository.findAll();
     }
 
-    public List<Universite> retrieveAllUniversites() {
-        log.info("Retrieving all universities..");
-        List<Universite> universites = (List<Universite>) universiteRepository.findAll();
-        log.debug("Retrieved {} universities", universites.size());
-        return universites;
+    public    Universite addUniversite (Universite  u){
+        return  (universiteRepository.save(u));
     }
 
-    public Universite addUniversite(Universite u) {
-        log.info("Adding new university : {}", u.getNomUniv());
-        Universite savedUniversite = universiteRepository.save(u);
-        log.info("University added with ID: {}", savedUniversite.getIdUniv());
-        return savedUniversite;
-    }
-
-    public Universite updateUniversite(Universite u) {
-        log.info("Updating university with ID: {}", u.getIdUniv());
-        Universite updatedUniversite = universiteRepository.save(u);
-        log.info("University updated: {}", updatedUniversite);
-        return updatedUniversite;
+    public    Universite updateUniversite (Universite  u){
+        return  (universiteRepository.save(u));
     }
 
     public Universite retrieveUniversite(Integer idUniversite) {
-        log.info("Retrieving university with ID: {}", idUniversite);
-        Optional<Universite> universiteOpt = universiteRepository.findById(idUniversite);
-        if (universiteOpt.isPresent()) {
-            log.debug("University found: {}", universiteOpt.get());
-            return universiteOpt.get();
-        } else {
-            log.error("University with ID {} not found.", idUniversite);
-            throw new NoSuchElementException("University not found with ID: " + idUniversite);
-        }
+        return universiteRepository.findById(idUniversite).orElse(null);
     }
 
-    public void deleteUniversite(Integer idUniversite) {
-        log.info("Deleting university with ID: {}", idUniversite);
-        Universite universite = retrieveUniversite(idUniversite);
-        universiteRepository.delete(universite);
-        log.info("University with ID {} deleted successfully.", idUniversite);
+    public  void deleteUniversite(Integer idUniversite){
+        universiteRepository.delete(retrieveUniversite(idUniversite));
     }
 
     public void assignUniversiteToDepartement(Integer idUniversite, Integer idDepartement) {
-        log.info("Assigning department with ID {} to university with ID {}", idDepartement, idUniversite);
         Universite u = universiteRepository.findById(idUniversite).orElse(null);
         Departement d = departementRepository.findById(idDepartement).orElse(null);
 
+        // Check if either Universite or Departement is null
         if (u == null) {
-            log.error("University with ID {} not found.", idUniversite);
-            return;
+            throw new EntityNotFoundException("Universite not found with id: " + idUniversite);
         }
 
         if (d == null) {
-            log.error("Department with ID {} not found.", idDepartement);
-            return;
+            throw new EntityNotFoundException("Departement not found with id: " + idDepartement);
         }
 
+        // Add the Departement to the Universite's list of Departements
         u.getDepartements().add(d);
         universiteRepository.save(u);
-        log.info("Department with ID {} assigned to university with ID {}", idDepartement, idUniversite);
     }
+
 
     public Set<Departement> retrieveDepartementsByUniversite(Integer idUniversite) {
-        log.info("Retrieving departments for university with ID {}", idUniversite);
         Universite u = universiteRepository.findById(idUniversite).orElse(null);
 
+        // Check if Universite is null
         if (u == null) {
-            log.error("University with ID {} not found.", idUniversite);
-            return null;
+            throw new EntityNotFoundException("Universite not found with id: " + idUniversite);
         }
 
-        Set<Departement> departements = u.getDepartements();
-        log.debug("Retrieved {} departments for university with ID {}", departements.size(), idUniversite);
-        return departements;
+        return u.getDepartements();
     }
+
 }
