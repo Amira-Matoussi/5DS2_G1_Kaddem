@@ -10,7 +10,7 @@ services:
       - /home/mysql/data:/var/lib/mysql
 
   spring_app:
-    image: boujelbenezaineb/zainebboujelbene_5ds2_g1_kaddem:${IMAGE_TAG}  # Use dynamic tag here
+    image: boujelbenezaineb/zainebboujelbene_5ds2_g1_kaddem:latest  # Use dynamic tag here
     container_name: devopscontainer
     restart: on-failure
     ports:
