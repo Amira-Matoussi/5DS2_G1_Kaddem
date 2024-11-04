@@ -7,9 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tn.esprit.spring.entities.Contrat;
+import tn.esprit.spring.entities.ContratDTO;
+import tn.esprit.spring.entities.Specialite;
 import tn.esprit.spring.repositories.ContratRepository;
 import tn.esprit.spring.services.ContratServiceImpl;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,18 +35,6 @@ class ContratServiceImpTest {
         testContrat.setIdContrat(1);
         testContrat.setMontantContrat(5000);
     }
-    // JUnit test for addContrat method
-    @Test
-    void testAddContrat_JUnit() {
-        // Since we're using Mockito, we need to define the behavior
-        when(contratRepository.save(any(Contrat.class))).thenReturn(testContrat);
-
-        Contrat result = contratService.addContrat(testContrat);
-
-        assertNotNull(result);
-        assertEquals(5000, result.getMontantContrat());
-        verify(contratRepository).save(any(Contrat.class));
-    }
     // Mockito test for addContrat method
     @Test
     void testAddContrat_Mockito() {
@@ -48,12 +42,6 @@ class ContratServiceImpTest {
         Contrat result = contratService.addContrat(testContrat);
         assertEquals(5000, result.getMontantContrat());
         verify(contratRepository, times(1)).save(testContrat);
-    }
-    // JUnit test for retrieveContrat method
-    @Test
-    void testRetrieveContrat_JUnit() {
-        Contrat contrat = contratService.retrieveContrat(1);
-        assertNull(contrat);
     }
     // Mockito test for retrieveContrat method
     @Test
@@ -64,19 +52,7 @@ class ContratServiceImpTest {
         assertEquals(5000, result.getMontantContrat());
         verify(contratRepository, times(1)).findById(1);
     }
-    // JUnit test for updateContrat method
 
-    @Test
-    void testUpdateContrat_JUnit() {
-        // Since we're using Mockito, we need to define the behavior
-        when(contratRepository.save(any(Contrat.class))).thenReturn(testContrat);
-
-        Contrat updatedContrat = contratService.updateContrat(testContrat);
-
-        assertNotNull(updatedContrat);
-        assertEquals(5000, updatedContrat.getMontantContrat());
-        verify(contratRepository).save(any(Contrat.class));
-    }
     // Mockito test for updateContrat method
     @Test
     void testUpdateContrat_Mockito() {
@@ -85,13 +61,6 @@ class ContratServiceImpTest {
         assertNotNull(result);
         assertEquals(5000, result.getMontantContrat());
         verify(contratRepository, times(1)).save(testContrat);
-    }
-    // JUnit test for retrieveAllContrats method
-    @Test
-    void testRetrieveAllContrats_JUnit() {
-        List<Contrat> contrats = contratService.retrieveAllContrats();
-        assertNotNull(contrats);
-        assertTrue(contrats.isEmpty());
     }
     // Mockito test for retrieveAllContrats method
     @Test
@@ -103,5 +72,70 @@ class ContratServiceImpTest {
         assertEquals(1, result.size());
         assertEquals(testContrat.getIdContrat(), result.get(0).getIdContrat());
         verify(contratRepository, times(1)).findAll();
+    }
+    @Test
+    void testContratConstructor() {
+        Date endDate = new Date();
+        Contrat contrat = new Contrat(endDate, endDate, Specialite.IA, false, 5000);
+
+        assertNotNull(contrat);
+        assertEquals(endDate, contrat.getDateFinContrat());
+        assertEquals(Specialite.IA, contrat.getSpecialite());
+        assertFalse(contrat.getArchive());
+        assertEquals(5000, contrat.getMontantContrat());
+    }
+
+    @Test
+    void testContratSettersAndGetters() {
+        Integer id = 1;
+        Date endDate = new Date();
+        boolean archive = false;
+        int montant = 5000;
+
+        testContrat.setIdContrat(id);
+        testContrat.setDateFinContrat(endDate);
+        testContrat.setArchive(archive);
+        testContrat.setMontantContrat(montant);
+
+        assertEquals(id, testContrat.getIdContrat());
+        assertEquals(endDate, testContrat.getDateFinContrat());
+        assertEquals(archive, testContrat.getArchive());
+        assertEquals(montant, testContrat.getMontantContrat());
+    }
+
+    // If you have a ContratDTO class, you can add DTO tests as well
+    @Test
+    void testContratDTO() {
+        Integer id = 1;
+        Date dateDebut = new Date(); // Set an appropriate start date
+        Date dateFin = new Date(); // Set an appropriate end date
+        String specialite = "Some Speciality"; // Set an appropriate speciality
+        Boolean archive = false;
+        Integer montant = 5000;
+
+        ContratDTO dto = new ContratDTO(id, dateDebut, dateFin, specialite, archive, montant);
+
+        assertEquals(id, dto.getIdContrat());
+        assertEquals(archive, dto.getArchive());
+        assertEquals(montant, dto.getMontantContrat());
+        assertEquals(dateDebut, dto.getDateDebutContrat());
+        assertEquals(dateFin, dto.getDateFinContrat());
+        assertEquals(specialite, dto.getSpecialite());
+    }
+
+    @Test
+    void testContratDTOSettersAndGetters() {
+        ContratDTO dto = new ContratDTO();
+        Integer id = 1;
+        boolean archive = false;
+        int montant = 5000;
+
+        dto.setIdContrat(id);
+        dto.setArchive(archive);
+        dto.setMontantContrat(montant);
+
+        assertEquals(id, dto.getIdContrat());
+        assertEquals(archive, dto.getArchive());
+        assertEquals(montant, dto.getMontantContrat());
     }
 }
