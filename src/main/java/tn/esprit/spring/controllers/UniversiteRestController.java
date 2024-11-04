@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Departement;
 import tn.esprit.spring.entities.Universite;
+import tn.esprit.spring.entities.UniversiteDTO;
 import tn.esprit.spring.services.IUniversiteService;
 
 import java.util.List;
@@ -33,10 +34,12 @@ public class UniversiteRestController {
 
 	// http://localhost:8089/Kaddem/universite/add-universite
 	@PostMapping("/add-universite")
-	public Universite addUniversite(@RequestBody Universite u) {
-		return universiteService.addUniversite(u);
-	}
+	public Universite addUniversite(@RequestBody UniversiteDTO uDTO) {
+		Universite universite = new Universite();
+		universite.setNomUniv(uDTO.getNomUniv()); // Use setNomUniv instead of setName
 
+		return universiteService.addUniversite(universite);
+	}
 	// http://localhost:8089/Kaddem/universite/remove-universite/1
 	@DeleteMapping("/remove-universite/{universite-id}")
 	public void removeUniversite(@PathVariable("universite-id") Integer universiteId) {

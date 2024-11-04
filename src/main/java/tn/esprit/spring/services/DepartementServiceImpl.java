@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import tn.esprit.spring.entities.Departement;
 import tn.esprit.spring.repositories.DepartementRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 
@@ -32,8 +34,15 @@ public class DepartementServiceImpl implements IDepartementService{
 		return departementRepository.save(d);
 	}
 
-	public  Departement retrieveDepartement (Integer idDepart){
-		return departementRepository.findById(idDepart).get();
+	public Departement retrieveDepartement(Integer idDepart) {
+		Optional<Departement> optionalDepartement = departementRepository.findById(idDepart);
+
+		if (optionalDepartement.isPresent()) {
+			return optionalDepartement.get();
+		} else {
+			// Handle the case when the Departement is not found
+			throw new EntityNotFoundException("Departement not found with id: " + idDepart);
+		}
 	}
 	public  void deleteDepartement(Integer idDepartement){
 		Departement d=retrieveDepartement(idDepartement);

@@ -83,18 +83,25 @@ public class EquipeServiceImpl implements IEquipeService{
 		Date dateSysteme = new Date();
 
 		for (Contrat contrat : etudiant.getContrats()) {
-			if (contrat.getArchive()) {
+			// Check if contrat is null before proceeding
+			if (contrat == null || contrat.getArchive()) {
 				continue;
 			}
 
-			long differenceInTime = dateSysteme.getTime() - contrat.getDateFinContrat().getTime();
-			long differenceInYears = (differenceInTime / (1000L * 60 * 60 * 24 * 365));
+			// Ensure that getDateFinContrat() does not return null
+			Date dateFinContrat = contrat.getDateFinContrat();
+			if (dateFinContrat != null) {
+				long differenceInTime = dateSysteme.getTime() - dateFinContrat.getTime();
+				long differenceInYears = differenceInTime / (1000L * 60 * 60 * 24 * 365);
 
-			if (differenceInYears > 1) {
-				return true;
+				// Check if the contract is active (not finished over a year ago)
+				if (differenceInYears <= 1) {
+					return true; // Active contract found
+				}
 			}
 		}
-		return false;
+		return false; // No active contracts found
+
 	}
 
 	private void updateEquipeNiveau(Equipe equipe) {

@@ -4,34 +4,51 @@ package tn.esprit.spring.entities;
 import java.io.Serializable;
 
 public class EtudiantDTO implements Serializable {
-    private String nom; // Replace with actual fields you need
-    private String prenom; // Add more fields as necessary
+    private Integer idEtudiant; // Optional, can be excluded if you don't want to provide ID when creating
+    private String nomE;
+    private String prenomE;
+    private String op; // Assuming Option is represented as a String in DTO
 
     // Default constructor
     public EtudiantDTO() {}
 
     // Parameterized constructor
-    public EtudiantDTO(String nom, String prenom) {
-        this.nom = nom;
-        this.prenom = prenom;
+    public EtudiantDTO(String nomE, String prenomE, String op) {
+        this.nomE = nomE;
+        this.prenomE = prenomE;
+        this.op = op;
     }
 
     // Getters and Setters
-    public String getNom() {
-        return nom;
+    public Integer getIdEtudiant() {
+        return idEtudiant;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setIdEtudiant(Integer idEtudiant) {
+        this.idEtudiant = idEtudiant;
     }
 
-    public String getPrenom() {
-        return prenom;
+    public String getNomE() {
+        return nomE;
     }
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
+    public void setNomE(String nomE) {
+        this.nomE = nomE;
     }
 
-    // You can add more fields as necessary
+    public String getPrenomE() {
+        return prenomE;
+    }
+
+    public void setPrenomE(String prenomE) {
+        this.prenomE = prenomE;
+    }
+
+    public String getOp() {
+        return op;
+    }
+
+    public void setOp(String op) {
+        this.op = op;
+    }
 }

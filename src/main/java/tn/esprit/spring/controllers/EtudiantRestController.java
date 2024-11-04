@@ -3,6 +3,8 @@ package tn.esprit.spring.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.entities.Etudiant;
+import tn.esprit.spring.entities.EtudiantDTO;
+import tn.esprit.spring.entities.Option;
 import tn.esprit.spring.services.IEtudiantService;
 
 import java.util.List;
@@ -30,8 +32,14 @@ public class EtudiantRestController {
 
 	// http://localhost:8089/Kaddem/etudiant/add-etudiant
 	@PostMapping("/add-etudiant")
-	public Etudiant addEtudiant(@RequestBody Etudiant e) {
-		return etudiantService.addEtudiant(e);
+	public Etudiant addEtudiant(@RequestBody EtudiantDTO eDTO) {
+		// Create a new Etudiant entity
+		Etudiant etudiant = new Etudiant();
+		etudiant.setNomE(eDTO.getNomE());
+		etudiant.setPrenomE(eDTO.getPrenomE());
+		etudiant.setOp(Option.valueOf(eDTO.getOp())); // Assuming Option can be set this way
+
+		return etudiantService.addEtudiant(etudiant);
 	}
 
 	// http://localhost:8089/Kaddem/etudiant/remove-etudiant/1
@@ -42,8 +50,15 @@ public class EtudiantRestController {
 
 	// http://localhost:8089/Kaddem/etudiant/update-etudiant
 	@PutMapping("/update-etudiant")
-	public Etudiant updateEtudiant(@RequestBody Etudiant e) {
-		return etudiantService.updateEtudiant(e);
+	public Etudiant updateEtudiant(@RequestBody EtudiantDTO eDTO) {
+		// Create a new Etudiant entity
+		Etudiant etudiant = new Etudiant();
+		etudiant.setIdEtudiant(eDTO.getIdEtudiant()); // Set the ID for updating
+		etudiant.setNomE(eDTO.getNomE());
+		etudiant.setPrenomE(eDTO.getPrenomE());
+		etudiant.setOp(Option.valueOf(eDTO.getOp())); // Assuming Option can be set this way
+
+		return etudiantService.updateEtudiant(etudiant);
 	}
 
 	//@PutMapping("/affecter-etudiant-departement")
@@ -52,12 +67,18 @@ public class EtudiantRestController {
 		etudiantService.assignEtudiantToDepartement(etudiantId, departementId);
     }
 //addAndAssignEtudiantToEquipeAndContract(Etudiant e, Integer idContrat, Integer idEquipe)
-    /* Ajouter un étudiant tout en lui affectant un contrat et une équipe */    @PostMapping("/add-etudiant/{idContrat}/{idEquipe}")
-
-public Etudiant addEtudiantWithEquipeAndContract(@RequestBody Etudiant e,
+@PostMapping("/add-etudiant/{idContrat}/{idEquipe}")
+public Etudiant addEtudiantWithEquipeAndContract(@RequestBody EtudiantDTO eDTO,
 												 @PathVariable("idContrat") Integer idContrat,
 												 @PathVariable("idEquipe") Integer idEquipe) {
-	return etudiantService.addAndAssignEtudiantToEquipeAndContract(e, idContrat, idEquipe);
+	// Create a new Etudiant entity from the DTO
+	Etudiant etudiant = new Etudiant();
+	etudiant.setNomE(eDTO.getNomE());
+	etudiant.setPrenomE(eDTO.getPrenomE());
+	etudiant.setOp(Option.valueOf(eDTO.getOp())); // Adjust according to your Option enum
+
+	// Call the service method to add and assign the student to the contract and team
+	return etudiantService.addAndAssignEtudiantToEquipeAndContract(etudiant, idContrat, idEquipe);
 }
 
 	@GetMapping(value = "/getEtudiantsByDepartement/{idDepartement}")
