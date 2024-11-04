@@ -59,9 +59,6 @@ public class Etudiant implements Serializable{
         return contrats;
     }
 
-    public void setContrats(Set<Contrat> contrats) {
-        contrats = contrats;
-    }
 
     public Departement getDepartement() {
         return departement;

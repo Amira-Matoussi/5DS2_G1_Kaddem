@@ -1,5 +1,4 @@
 package tn.esprit.spring.kaddem.dto;
-import java.io.Serializable;
 public class UniversiteDTO {
     private String nomUniv; // Match the entity field name
 

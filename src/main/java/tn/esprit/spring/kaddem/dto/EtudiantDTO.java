@@ -1,5 +1,4 @@
 package tn.esprit.spring.kaddem.dto;
-import java.io.Serializable;
 public class EtudiantDTO {
     private Integer idEtudiant; // Optional, can be excluded if you don't want to provide ID when creating
     private String nomE;

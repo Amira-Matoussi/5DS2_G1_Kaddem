@@ -1,5 +1,4 @@
 package tn.esprit.spring.kaddem.dto;
-import java.io.Serializable;
 import java.util.Set;
 
 public class EquipeDTO {

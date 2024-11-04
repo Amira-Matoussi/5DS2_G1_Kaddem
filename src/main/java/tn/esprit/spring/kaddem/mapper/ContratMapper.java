@@ -4,6 +4,10 @@ import tn.esprit.spring.kaddem.dto.ContratDTO;
 import tn.esprit.spring.kaddem.entities.Contrat;
 
 public class ContratMapper {
+    // Private constructor to prevent instantiation
+    private ContratMapper() {
+        throw new UnsupportedOperationException("Utility class");
+    }
     public static ContratDTO toDTO(Contrat contrat) {
         return new ContratDTO(
                 contrat.getIdContrat(),

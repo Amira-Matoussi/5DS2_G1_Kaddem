@@ -12,6 +12,8 @@ import tn.esprit.spring.kaddem.services.IContratService;
 import java.util.Date;
 import java.util.List;
 
+import static tn.esprit.spring.kaddem.mapper.ContratMapper.toEntity;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/contrat")
@@ -32,7 +34,7 @@ public class ContratRestController {
 	// http://localhost:8089/Kaddem/econtrat/add-contrat
 	@PostMapping("/add-contrat")
 	public ContratDTO addContrat(@RequestBody ContratDTO contratDTO) {
-		Contrat contrat = ContratMapper.toEntity(contratDTO);
+		Contrat contrat = toEntity(contratDTO);
 		Contrat savedContrat = contratService.addContrat(contrat);
 		return ContratMapper.toDTO(savedContrat);
 	}
@@ -45,9 +47,9 @@ public class ContratRestController {
 
 	// http://localhost:8089/Kaddem/contrat/update-contrat
 	@PutMapping("/update-contrat")
-	public Contrat updateContrat(@RequestBody Contrat c) {
-		Contrat contrat= contratService.updateContrat(c);
-		return contrat;
+	public Contrat updateContrat(@RequestBody ContratDTO contratDTO) {
+		Contrat contrat = toEntity(contratDTO);
+		return contratService.updateContrat(contrat);
 	}
 	@PutMapping(value = "/assignContratToEtudiant/{idContrat}/{nomE}/{prenomE}")
 	public Contrat assignContratToEtudiant ( @PathVariable("idContrat") Integer idContrat,
