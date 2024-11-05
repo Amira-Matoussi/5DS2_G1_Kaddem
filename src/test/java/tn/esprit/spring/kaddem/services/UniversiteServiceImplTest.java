@@ -37,7 +37,7 @@ class UniversiteServiceImplTest {
         mockUniversites.add(new Universite("University 1"));
         mockUniversites.add(new Universite("University 2"));
 
-        // Now let's Define behavior of mock repository
+        // Now let's Define behavior of mock repository now for tes
         when(universiteRepository.findAll()).thenReturn(mockUniversites);
 
         // Call service method
