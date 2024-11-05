@@ -214,4 +214,4 @@ class EquipeServiceImplTest {
         assertEquals(name, dto.getNomEquipe());
         assertEquals(niveau, dto.getNiveau());
     }
-}
+}  
