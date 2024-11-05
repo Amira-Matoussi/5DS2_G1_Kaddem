@@ -44,12 +44,12 @@ pipeline {
         }
 
         // 6. Deploy to Nexus Repository
-        // stage('Nexus Deployment') {
-        //     steps {
-        //         echo 'Deploying to Nexus...'
-        //         sh 'mvn deploy -DskipTests'
-        //     }
-        // }
+        stage('Nexus Deployment') {
+            steps {
+                echo 'Deploying to Nexus...'
+                sh 'mvn deploy -DskipTests'
+            }
+        }
 
         // 7. Docker Image Creation
         stage('Docker Image Creation') {
@@ -80,7 +80,7 @@ pipeline {
         stage('Launch Prometheus') {
             steps {
                 echo 'Starting Prometheus for monitoring...';
-                sh 'docker run -d --name prometheus -p 9090:9090 prom/prometheus';
+                sh 'docker run -d --name prometheus -p 9091:9090 prom/prometheus';
             }
         }
 
@@ -88,7 +88,7 @@ pipeline {
         stage('Launch Grafana') {
             steps {
                 echo 'Starting Grafana for visualization...';
-                sh 'docker run -d --name grafana -p 3000:3000 grafana/grafana';
+                sh 'docker run -d --name grafana -p 3001:3000 grafana/grafana';
             }
         }
     }
