@@ -44,12 +44,12 @@ pipeline {
         }
 
         // 6. Deploy to Nexus Repository
-        stage('Nexus Deployment') {
-            steps {
-                echo 'Deploying to Nexus...'
-                sh 'mvn deploy -DskipTests'
-            }
-        }
+        // stage('Nexus Deployment') {
+        //     steps {
+        //         echo 'Deploying to Nexus...'
+        //         sh 'mvn deploy -DskipTests'
+        //     }
+        // }
 
         // 7. Docker Image Creation
         stage('Docker Image Creation') {
