@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) //enables Mockito's behavior for the test class.
 class EtudiantServiceImplTest {
 
     @InjectMocks
@@ -69,7 +69,9 @@ class EtudiantServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(etudiant, result.get(0));
+        //Checks that the result is not null, has the expected size, and contains the expected etudiant
     }
+    //returns a list of all students.
 
     @Test
     void testAddEtudiant() {
@@ -88,7 +90,7 @@ class EtudiantServiceImplTest {
         Etudiant result = etudiantService.updateEtudiant(etudiant);
 
         assertNotNull(result);
-        assertEquals(etudiant, result);
+        assertEquals(etudiant, result); //Verifies the saved Etudiant is the expected one
     }
 
     @Test
@@ -150,3 +152,4 @@ class EtudiantServiceImplTest {
         assertEquals(etudiant, result.get(0));
     }
 }
+
