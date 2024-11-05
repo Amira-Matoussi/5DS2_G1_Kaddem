@@ -17,7 +17,6 @@ import tn.esprit.spring.kaddem.repositories.ContratRepository;
 import tn.esprit.spring.kaddem.repositories.DepartementRepository;
 import tn.esprit.spring.kaddem.repositories.EquipeRepository;
 import tn.esprit.spring.kaddem.repositories.EtudiantRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
