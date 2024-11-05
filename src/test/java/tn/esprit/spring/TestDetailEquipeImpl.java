@@ -58,7 +58,7 @@ import tn.esprit.spring.kaddem.entities.Equipe;
         detailEquipe.setEquipe(equipe);
         assertEquals(equipe, detailEquipe.getEquipe());
     }
-//testing
+//testing1
     @Test
      void testDetailEquipeConstructor() {
         DetailEquipe newDetailEquipe = new DetailEquipe(2, 201, "Team Tactics");
