@@ -40,7 +40,7 @@ public class DepartementServiceImpl implements IDepartementService{
 		if (optionalDepartement.isPresent()) {
 			return optionalDepartement.get();
 		} else {
-			// Handle the case when the Departement is not found
+			// Handle the case when the Departement is not found ;;;;;
 			throw new EntityNotFoundException("Departement not found with id: " + idDepart);
 		}
 	}
