@@ -7,7 +7,7 @@ pipeline {
         stage('Code Retrieval') {
             steps {
                 echo 'Cloning repository...';
-                git branch: 'Khaled_5DS2_G1', url: 'https://github.com/Khaled-Chaabouni/5DS2_G1_Kaddem.git';
+                git branch: 'Khaled_5DS2_G1', url: 'https://github.com/Amira-Matoussi/5DS2_G1_Kaddem.git';
             }
         }
 
